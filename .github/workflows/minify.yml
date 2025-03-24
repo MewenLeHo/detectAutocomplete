@@ -22,12 +22,12 @@ jobs:
         run: npm install terser -g
 
       - name: Minify JavaScript
-        run: terser script.js -o script.min.js
+        run: terser detectAutocomplete.js -o detectAutocomplete.min.js
 
       - name: Commit minified file
         run: |
           git config --local user.name "GitHub Action"
           git config --local user.email "action@github.com"
-          git add script.min.js
+          git add detectAutocomplete.min.js
           git commit -m "Minify JavaScript file" || echo "No changes to commit"
           git push
