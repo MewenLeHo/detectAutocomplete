@@ -3,7 +3,7 @@ name: Minify JavaScript
 on:
   push:
     branches:
-      - main  # Changez cela si votre branche principale a un autre nom
+      - main
 
 jobs:
   minify:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'  # Spécifiez la version de Node.js
+          node-version: '14'
 
       - name: Install Terser
         run: npm install terser -g
