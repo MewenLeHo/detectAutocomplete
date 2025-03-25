@@ -1,9 +1,7 @@
-//// V3
-
 javascript: (function () {
   var elements = document.querySelectorAll('input, select, textarea');
-  var results = [];
-  var results2 = [];
+  var resultsValid = [];
+  var resultsInvalidOrMissing = [];
   var totalFormElements = elements.length;
 
   // HTML autocomplete attribute specification
@@ -27,7 +25,7 @@ javascript: (function () {
     'sex', 'gender', 'organization', 'organization-title', 'language',
     // Credentials
     'username', 'new-password', 'current-password', 'one-time-code',
-    // Pone
+    // Phone
     'tel-country-code', 'tel-national', 'tel-area-code',
     'tel-local', 'tel-extension', 'impp', 'photo',
     // Combined values
@@ -41,15 +39,15 @@ javascript: (function () {
 
   elements.forEach(function(element) {
       if (element.hasAttribute('autocomplete')) {
-          var autocompleteValue = element.getAttribute('autocomplete');
-          var isValid = allowedValues.includes(autocompleteValue) ? 'valide' : 'invalide';
-          results.push({
+          let autocompleteValue = element.getAttribute('autocomplete');
+          let isValid = allowedValues.includes(autocompleteValue) ? 'valide' : 'invalide';
+          resultsValid.push({
               element: element,
               autocomplete: autocompleteValue,
               valid: isValid
           });
       } else {
-          results2.push({
+        resultsInvalidOrMissing.push({
               element: element,
               autocomplete: '[null]',
               valid: '[inconnu]'
@@ -57,15 +55,10 @@ javascript: (function () {
       }
   });
 
-  // Afficher un message d'alerte avec le nombre total d'éléments
-  alert(totalFormElements + ' éléments de formulaire détectés.\n' + results2.length + ' éléments avec l\'attribut autocomplete.');
+  // Display alert
+  alert(totalFormElements + ' éléments de formulaire détectés.\n' + resultsInvalidOrMissing.length + ' éléments avec l\'attribut autocomplete.');
 
-  // Afficher les résultats dans la console
-  results.forEach(function(result) {
-      console.log('Élément :', result.element, '[autocomplete] :', result.autocomplete, 'Validité :', result.valid);
-  });
-
-  // Afficher les résultats dans la page
+  // Display results in page
   elements.forEach(function(element) {
     const label = document.createElement('p');
     label.style.cssText = 'background:#ff0;color:#000;display: inline-block;padding: 2px 5px;margin: 2px;border-radius: 3px;font-size: 15px;font-family: monospace;font-weight:bold';
