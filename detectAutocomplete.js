@@ -1,31 +1,32 @@
-javascript: (function () {
-  var elements = document.querySelectorAll('input, select, textarea');
-  var resultsValid = [];
-  var resultsInvalidOrMissing = [];
-  var totalFormElements = elements.length;
+javascript:(function(){
+  // Constants and variables initialization
+  const elements = document.querySelectorAll('input, select, textarea');
+  const resultsValid = [];
+  const resultsInvalidOrMissing = [];
+  const totalFormElements = elements.length;
 
-  // HTML autocomplete attribute specification
+  // HTML5 autocomplete valid values
   const allowedValues = [
-    // General
+    // General purpose
     'on', 'off',
     // Names
     'name', 'given-name', 'additional-name', 'family-name',
-    // Contact
+    // Contact info
     'email', 'tel', 'url',
-    // Address
+    // Address fields
     'street-address', 'address-line1', 'address-line2', 'address-line3',
     'address-level1', 'address-level2', 'address-level3', 'address-level4',
     'country', 'country-name', 'postal-code',
-    // Transaction
+    // Payment info
     'cc-name', 'cc-given-name', 'cc-additional-name', 'cc-family-name',
     'cc-number', 'cc-exp', 'cc-exp-month', 'cc-exp-year', 'cc-csc',
     'cc-type', 'transaction-currency', 'transaction-amount',
-    // Identity
+    // Personal info
     'bday', 'bday-day', 'bday-month', 'bday-year',
     'sex', 'gender', 'organization', 'organization-title', 'language',
-    // Credentials
+    // Login credentials
     'username', 'new-password', 'current-password', 'one-time-code',
-    // Phone
+    // Phone numbers
     'tel-country-code', 'tel-national', 'tel-area-code',
     'tel-local', 'tel-extension', 'impp', 'photo',
     // Combined values
@@ -37,31 +38,32 @@ javascript: (function () {
     'fax-tel', 'pager-tel'
   ];
 
+  // Analyze form elements
   elements.forEach(function(element) {
-      if (element.hasAttribute('autocomplete')) {
-          let autocompleteValue = element.getAttribute('autocomplete');
-          let isValid = allowedValues.includes(autocompleteValue) ? 'valide' : 'invalide';
-          resultsValid.push({
-              element: element,
-              autocomplete: autocompleteValue,
-              valid: isValid
-          });
-      } else {
-        resultsInvalidOrMissing.push({
-              element: element,
-              autocomplete: '[null]',
-              valid: '[inconnu]'
-          });
-      }
+    if (element.hasAttribute('autocomplete')) {
+      let autocompleteValue = element.getAttribute('autocomplete');
+      let isValid = allowedValues.includes(autocompleteValue) ? 'valid' : 'invalid';
+      resultsValid.push({
+        element: element,
+        autocomplete: autocompleteValue,
+        valid: isValid
+      });
+    } else {
+      resultsInvalidOrMissing.push({
+        element: element,
+        autocomplete: '[null]',
+        valid: '[missing]'
+      });
+    }
   });
 
-  // Display alert
-  alert(totalFormElements + ' éléments de formulaire détectés.\n' + resultsValid.length + ' éléments avec l\'attribut autocomplete.');
+  // Display results summary
+  alert(`${totalFormElements} form elements detected.\n${resultsValid.length} elements with autocomplete attribute.`);
 
-  // Display results in page
+  // Add visual indicators
   elements.forEach(function(element) {
     const label = document.createElement('p');
-    label.style.cssText = 'background:#ff0;color:#000;display: inline-block;padding: 2px 5px;margin: 2px;border-radius: 3px;font-size: 15px;font-family: monospace;font-weight:bold';
+    label.style.cssText = 'background:#ff0;color:#000;display:inline-block;padding:2px 5px;margin-top:2px;border-radius:3px;font-size:15px;font-family:monospace;font-weight:bold';
 
     if(element.hasAttribute('autocomplete')) {
       const value = element.getAttribute('autocomplete');
@@ -69,11 +71,10 @@ javascript: (function () {
       label.textContent = `autocomplete="${value}" ${isValid}`;
       label.style.backgroundColor = isValid === '✓' ? '#cfc' : '#fcc';
     } else {
-      label.textContent = '[autocomplete] manquant';
+      label.textContent = '[autocomplete] missing';
       label.style.backgroundColor = '#ffc';
     }
 
     element.parentNode.insertBefore(label, element.nextSibling);
   });
-
 })();
