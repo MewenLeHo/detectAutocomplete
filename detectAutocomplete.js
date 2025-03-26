@@ -56,7 +56,7 @@ javascript: (function () {
   });
 
   // Display alert
-  alert(totalFormElements + ' éléments de formulaire détectés.\n' + resultsInvalidOrMissing.length + ' éléments avec l\'attribut autocomplete.');
+  alert(totalFormElements + ' éléments de formulaire détectés.\n' + resultsValid.length + ' éléments avec l\'attribut autocomplete.');
 
   // Display results in page
   elements.forEach(function(element) {
