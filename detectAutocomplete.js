@@ -63,7 +63,7 @@ javascript:(function(){
   // Add visual indicators
   elements.forEach(function(element) {
     const label = document.createElement('p');
-    label.style.cssText = 'background:#ff0;color:#000;display:inline-block;padding:2px 5px;margin-top:2px;border-radius:3px;font-size:15px;font-family:monospace;font-weight:bold';
+    label.style.cssText = 'background:#ff0;color:#000;display:block;max-inline-size:fit-content;padding:2px 5px;margin-top:2px;border-radius:3px;font-size:15px;font-family:monospace;font-weight:bold';
 
     if(element.hasAttribute('autocomplete')) {
       const value = element.getAttribute('autocomplete');
