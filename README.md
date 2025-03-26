@@ -23,7 +23,6 @@ A simple tool to validate HTML form elements' autocomplete attributes according 
    - 🟡 Yellow: missing autocomplete
 4. A popup will show you the total number of form elements detected
 
-
 ## Why Use This?
 
 - Improve form accessibility
