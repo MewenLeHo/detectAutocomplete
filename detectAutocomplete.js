@@ -65,14 +65,16 @@ javascript:(function(){
     const label = document.createElement('p');
     label.style.cssText = 'background:#ff0;color:#000;display:block;max-inline-size:fit-content;padding:2px 5px;margin-top:2px;border-radius:3px;font-size:15px;font-family:monospace;font-weight:bold';
 
-    if(element.hasAttribute('autocomplete')) {
-      const value = element.getAttribute('autocomplete');
-      const isValid = allowedValues.includes(value) ? '✓' : '✗';
-      label.textContent = `autocomplete="${value}" ${isValid}`;
-      label.style.backgroundColor = isValid === '✓' ? '#cfc' : '#fcc';
+    if (element.hasAttribute("autocomplete")) {
+      const value = element.getAttribute("autocomplete");
+      const isValid = allowedValues.includes(value)
+        ? '<span role="status">Valid value</span>'
+        : '<span role="alert">Invalid value</span>';
+      label.innerHTML = `autocomplete="${value}" ${isValid}`;
+      label.style.backgroundColor = allowedValues.includes(value) ? '#cfc' : '#fcc';
     } else {
-      label.textContent = '[autocomplete] missing';
-      label.style.backgroundColor = '#ffc';
+      label.textContent = "autocomplete missing";
+      label.style.backgroundColor = "#ffc";
     }
 
     element.parentNode.insertBefore(label, element.nextSibling);
