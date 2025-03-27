@@ -18,8 +18,8 @@ javascript:(function(){
               border-radius:3px;
               font-size:15px;
               font-family:monospace;
-              font-weight:bold
-              transition:.2s
+              font-weight:bold;
+              transition:.2s;
             }
             .ac-valid{
               background-color:#cfc;
