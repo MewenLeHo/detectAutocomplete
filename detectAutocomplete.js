@@ -5,6 +5,34 @@ javascript:(function(){
   const resultsInvalidOrMissing = [];
   const totalFormElements = elements.length;
 
+  // Styles
+  const style = document.createElement("style");
+  style.textContent = `
+            .ac-indicator{
+              background-color:#ff0;
+              color:#000;
+              display:block;
+              max-inline-size:fit-content;
+              padding:2px 5px;
+              margin-top:2px;
+              border-radius:3px;
+              font-size:15px;
+              font-family:monospace;
+              font-weight:bold
+              transition:.2s
+            }
+            .ac-valid{
+              background-color:#cfc;
+            }
+            .ac-invalid{
+              background-color:#fcc;
+            }
+            .ac-missing{
+              background-color:#ffc
+            }
+          `;
+  document.head.appendChild(style);
+
   // HTML5 autocomplete valid values
   const allowedValues = [
     // General purpose
@@ -63,18 +91,18 @@ javascript:(function(){
   // Add visual indicators
   elements.forEach(function(element) {
     const label = document.createElement('p');
-    label.style.cssText = 'background:#ff0;color:#000;display:block;max-inline-size:fit-content;padding:2px 5px;margin-top:2px;border-radius:3px;font-size:15px;font-family:monospace;font-weight:bold';
+    label.className = 'ac-indicator';
 
     if (element.hasAttribute("autocomplete")) {
       const value = element.getAttribute("autocomplete");
       const isValid = allowedValues.includes(value)
-        ? '<span role="status">Valid value</span>'
-        : '<span role="alert">Invalid value</span>';
+        ? '<span role="status">Valid</span>'
+        : '<span role="alert">Invalid</span>';
       label.innerHTML = `autocomplete="${value}" ${isValid}`;
-      label.style.backgroundColor = allowedValues.includes(value) ? '#cfc' : '#fcc';
+      label.className += isValid ? ' ac-valid' : ' ac-invalid';
     } else {
+      label.className += ' ac-missing';
       label.textContent = "autocomplete missing";
-      label.style.backgroundColor = "#ffc";
     }
 
     element.parentNode.insertBefore(label, element.nextSibling);
