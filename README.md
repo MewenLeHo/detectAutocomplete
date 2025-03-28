@@ -1,12 +1,12 @@
 # detectAutocomplete
-A simple tool to validate HTML form elements' autocomplete attributes according to the HTML specification.
+A simple tool for validating the `autocomplete` attributes of HTML form elements according to the HTML specification.
 
 ## Features
 
-- 🔍 Scans all form elements (`input`, `select`, `textarea`).
-- ✅ Validates `autocomplete` attributes against HTML standards
-- 🎯 Visual indicators for valid, invalid, and missing attributes
-- 📊 Quick summary of form elements analysis
+- 🔍 **Comprehensive Scanning**: Analyzes all form elements (`input`, `select`, `textarea`).
+- ✅ **Attribute Validation**: Checks `autocomplete` attributes against HTML standards.
+- 🎯 **Visual Indicators**: Displays status for valid, invalid, and missing attributes.
+- 📊 **Summary Report**: Provides a quick overview of the analysis results.
 
 ## Installation
 
@@ -18,18 +18,18 @@ A simple tool to validate HTML form elements' autocomplete attributes according 
 1. Navigate to any webpage with forms
 2. Click the bookmarklet
 3. Review the results:
-   - 🟢 Green: autocomplete present and valid
-   - 🔴 Red: autocomplete present but invalid
-   - 🟡 Yellow: missing autocomplete
-4. A popup will show you the total number of form elements detected
+   - 🟢 **Green**: `autocomplete` present and valid.
+   - 🔴 **Red**: `autocomplete` present but invalid.
+   - 🟡 **Yellow**: `autocomplete` attribute missing.
+4. A popup will display the total number of detected form elements.
 
 ## Why Use This?
 
-- Improve form accessibility
-- Ensure proper browser autofill functionality
-- Debug form implementation issues
-- Quick quality assurance checks
-- No installation required - works directly in browser
+- **Enhance Accessibility**: Improve form usability for all users.
+- **Optimize Autofill**: Ensure proper browser autofill functionality.
+- **Debug Issues**: Identify and resolve form implementation problems.
+- **Quality Assurance**: Conduct quick checks for form compliance.
+- **No Installation Required**: Works directly in your browser without additional setup.
 
 ## Supported Autocomplete Values
 
@@ -54,8 +54,20 @@ The tool validates against official HTML autocomplete attributes including:
 
 ## Browser Compatibility
 
-Works with modern browsers:
+Compatible with modern browsers:
 - Chrome
 - Firefox
 - Safari
 - Edge
+
+## Limitations
+
+## Future Improvements
+
+## Contribution
+
+Feel free to contribute by submitting issues or pull requests to enhance the tool's functionality or improve documentation. Your feedback is welcome!
+
+## Contributors
+
+- [Mewen Le Hô](https://github.com/MewenLeHo)
