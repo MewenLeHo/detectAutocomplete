@@ -10,62 +10,62 @@ javascript: (function () {
   // Styles
   const style = document.createElement("style");
   style.textContent = `
-            .ac-panel {
-              position:fixed;
-              top:10px;
-              left:10px;
-              background:#fff;
-              padding:15px;
-              border-radius:5px;
-              box-shadow:0 0 10px rgba(0,0,0,.2);
-              z-index:99999;
-              max-width:300px;
-              font-family:-apple-system,system-ui,sans-serif
-            }
-            #ac-panel-title {
-              font-size:1.5em
-            }
-            .ac-stats {
-              margin:10px 0;
-              padding:10px;
-              background:#f5f5f5;
-              border-radius:3px
-            }
-            .ac-indicator {
-              background-color:#ff0;
-              color:#000;
-              display:block;
-              max-inline-size:fit-content;
-              padding:2px 5px;
-              margin-top:2px;
-              border-radius:3px;
-              font-size:15px;
-              font-family:monospace;
-              font-weight:bold;
-              transition:.2s;
-            }
-            .ac-valid {
-              background-color:#cfc;
-            }
-            .ac-invalid {
-              background-color:#fcc;
-            }
-            .ac-missing {
-              background-color:#ffc
-            }
-            .ac-hidden {
-              display:none
-            }
-            .ac-btn {
-              margin:5px;
-              padding:5px 10px;
-              border:none;
-              border-radius:3px;
-              background:#2196F3;
-              color:#fff;
-              cursor:pointer
-            }
-          `;
+    .ac-panel {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+      z-index: 99999;
+      max-width: 300px;
+      font-family: -apple-system, system-ui, sans-serif;
+    }
+    #ac-panel-title {
+      font-size: 1.5em;
+    }
+    .ac-stats {
+      margin: 10px 0;
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 3px;
+    }
+    .ac-indicator {
+      background-color: #ff0;
+      color: #000;
+      display: block;
+      max-inline-size: fit-content;
+      padding: 2px 5px;
+      margin-top: 2px;
+      border-radius: 3px;
+      font-size: 15px;
+      font-family: monospace;
+      font-weight: bold;
+      transition: .2s;
+    }
+    .ac-valid {
+      background-color: #cfc;
+    }
+    .ac-invalid {
+      background-color: #fcc;
+    }
+    .ac-missing {
+      background-color: #ffc;
+    }
+    .ac-hidden {
+      display: none;
+    }
+    .ac-btn {
+      margin: 5px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 3px;
+      background: #0d6efd;
+      color: #fff;
+      cursor: pointer;
+    }
+  `;
   document.head.appendChild(style);
 
   // HTML5 autocomplete valid values
@@ -169,18 +169,19 @@ javascript: (function () {
   panel.setAttribute("role", "region");
   panel.setAttribute("aria-labelledby", "ac-panel-title");
   panel.innerHTML = `
-             <p id="ac-panel-title">detectAutocomplete</p>
-              <div class="ac-stats">
-                Total: ${elements.length}<br>
-                Valid: ${results.valid.length}<br>
-                Invalid: ${results.invalid.length}<br>
-                Missing: ${results.missing.length}
-              </div>
-              <button class="ac-btn" id="ac-toggle">Hide/Display</button>
-            `;
+    <p id="ac-panel-title">detectAutocomplete</p>
+    <div class="ac-stats">
+      Total: ${elements.length}<br>
+      Valid: ${results.valid.length}<br>
+      Invalid: ${results.invalid.length}<br>
+      Missing: ${results.missing.length}
+    </div>
+    <button class="ac-btn" id="ac-toggle">Hide/Display</button>
+  `;
   document.body.appendChild(panel);
 
   // Add visual indicators
+  const fragment = document.createDocumentFragment();
   elements.forEach(function (element) {
     const label = document.createElement("p");
     label.className = "ac-indicator";
@@ -199,6 +200,7 @@ javascript: (function () {
       label.textContent = "autocomplete missing";
     }
 
+    fragment.appendChild(label);
     element.parentNode.insertBefore(label, element.nextSibling);
   });
 
