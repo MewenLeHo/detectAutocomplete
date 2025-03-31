@@ -1,12 +1,18 @@
 # detectAutocomplete
 A simple tool for validating the `autocomplete` attributes of HTML form elements according to the HTML specification.
 
+## Latest Updates
+- Added support for combined values (e.g., 'shipping street-address')
+- Enhanced validation feedback with detailed metadata
+- Improved visual indicators and tooltips
+- Added documentation about tool limitations
+
 ## Features
 
-- 🔍 **Comprehensive Scanning**: Analyzes all form elements (`input`, `select`, `textarea`).
-- ✅ **Attribute Validation**: Checks `autocomplete` attributes against HTML standards.
-- 🎯 **Visual Indicators**: Displays status for valid, invalid, and missing attributes.
-- 📊 **Summary Report**: Provides a quick overview of the analysis results.
+- <span aria-hidden="true">🔍</span> **Comprehensive Scanning**: Analyzes all form elements (`input`, `select`, `textarea`).
+- <span aria-hidden="true">✅</span> **Attribute Validation**: Checks `autocomplete` attributes against HTML standards.
+- <span aria-hidden="true">🎯</span> **Visual Indicators**: Displays status for valid, invalid, and missing attributes.
+- <span aria-hidden="true">📊</span> **Summary Report**: Provides a quick overview of the analysis results.
 
 ## Installation
 
@@ -18,9 +24,9 @@ A simple tool for validating the `autocomplete` attributes of HTML form elements
 1. Navigate to any webpage with forms
 2. Click the bookmarklet
 3. Review the results:
-   - 🟢 **Green**: `autocomplete` present and valid.
-   - 🔴 **Red**: `autocomplete` present but invalid.
-   - 🟡 **Yellow**: `autocomplete` attribute missing.
+   - <span aria-hidden="true">🟢</span> **Green**: `autocomplete` present and valid.
+   - <span aria-hidden="true">🔴</span> **Red**: `autocomplete` present but invalid.
+   - <span aria-hidden="true">🟡</span> **Yellow**: `autocomplete` attribute missing.
 4. A popup will display the total number of detected form elements.
 
 ## Why Use This?
@@ -61,12 +67,32 @@ Compatible with modern browsers:
 - Edge
 
 ## Limitations
+**Important Note**: This tool performs syntax validation only. Specifically:
+- It checks if autocomplete values are syntactically valid according to HTML5 standards
+- It does NOT verify if valid values are used appropriately for their intended purpose
+- It does NOT make suggestions for proper attribute usage
+- It does NOT validate semantic correctness of field associations
+
+For proper implementation guidance, please refer to:
+- [HTML Specification](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute)
+- [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html)
 
 ## Future Improvements
+- Using Map for allowed values to improve performance
+- Enhance accessibility features
+- Cleaning and reformating
 
 ## Contribution
 
 Feel free to contribute by submitting issues or pull requests to enhance the tool's functionality or improve documentation. Your feedback is welcome!
+
+## How to contribute?
+
+1. Fork the repository
+2. Modify the main `detectAutocomplete.js` file
+3. Submit a pull request
+
+**Note**: The minified version will be automatically generated during the build process - you only need to work with the main JavaScript file.
 
 ## Contributors
 

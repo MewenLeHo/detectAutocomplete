@@ -1,5 +1,4 @@
 javascript: (function () {
-  // Clean up existing elements from previous runs
   // Remove existing elements and styles from previous executions
   function cleanup() {
     document
