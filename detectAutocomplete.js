@@ -1,6 +1,22 @@
 javascript: (function () {
-  // Constants and variables initialization
+  // Clean up existing elements from previous runs
+  function cleanup() {
+    const elements = document.querySelectorAll(".ac-indicator, .ac-panel");
+    elements.forEach((el) => {
+      el.removeEventListener("click", toggleIndicators);
+      el.remove();
+    });
+    elements = null;
+  }
+  cleanup();
+
+  // Create DocumentFragment for better performance
+  const fragment = document.createDocumentFragment();
+
+  // Get all form elements
   const elements = document.querySelectorAll("input, select, textarea");
+
+  // Initialize results object
   const results = {
     valid: [],
     invalid: [],
@@ -31,6 +47,9 @@ javascript: (function () {
       background: #f5f5f5;
       border-radius: 3px;
     }
+    .ac-stats p {
+      margin: 5px 0;
+    }
     .ac-indicator {
       background-color: #ff0;
       color: #000;
@@ -46,12 +65,15 @@ javascript: (function () {
     }
     .ac-valid {
       background-color: #cfc;
+      border-left: 4px solid #4caf50;
     }
     .ac-invalid {
       background-color: #fcc;
+      border-left: 4px solid #f44336;
     }
     .ac-missing {
       background-color: #ffc;
+      border-left: 4px solid #ff9800;
     }
     .ac-hidden {
       display: none;
@@ -66,7 +88,7 @@ javascript: (function () {
       cursor: pointer;
     }
   `;
-  document.head.appendChild(style);
+  fragment.appendChild(style);
 
   // HTML5 autocomplete valid values
   const allowedValues = [
@@ -152,10 +174,72 @@ javascript: (function () {
     "pager-tel",
   ];
 
+  const allowedSections = [
+    "shipping",
+    "billing",
+    "home",
+    "work",
+    "mobile",
+    "fax",
+    "pager",
+  ];
+
+  // Validate autocomplete value with enhanced rules
+  function validateAutocomplete(value) {
+    if (!value) return { isValid: false, message: "Empty value" };
+
+    const parts = value.toLowerCase().split(" ");
+
+    // Special cases: on/off
+    if (["on", "off"].includes(parts[0])) {
+      return {
+        isValid: parts.length === 1,
+        message:
+          parts.length > 1
+            ? "'on' and 'off' must be used alone"
+            : "Valid value",
+      };
+    }
+
+    // Section validation
+    if (parts[0].startsWith("section-")) {
+      return {
+        isValid:
+          parts.length >= 2 && allowedValues.includes(parts[parts.length - 1]),
+        message:
+          parts.length < 2
+            ? "Section must be followed by a value"
+            : "Valid section",
+      };
+    }
+
+    // Check section consistency
+    if (allowedSections.includes(parts[0])) {
+      const isValid =
+        parts.length >= 2 && allowedValues.includes(parts[parts.length - 1]);
+      return {
+        isValid,
+        message: isValid
+          ? "Valid combined value"
+          : "Invalid section combination",
+      };
+    }
+
+    // Standard value validation
+    return {
+      isValid: allowedValues.includes(parts[0]),
+      message: allowedValues.includes(parts[0])
+        ? "Valid value"
+        : "Invalid value",
+    };
+  }
+
   // Analyze form elements
   elements.forEach(function (element) {
     if (element.hasAttribute("autocomplete")) {
-      allowedValues.includes(element.getAttribute("autocomplete"))
+      const value = element.getAttribute("autocomplete");
+      const validation = validateAutocomplete(value);
+      validation.isValid
         ? results.valid.push(element)
         : results.invalid.push(element);
     } else {
@@ -171,43 +255,52 @@ javascript: (function () {
   panel.innerHTML = `
     <p id="ac-panel-title">detectAutocomplete</p>
     <div class="ac-stats">
-      Total: ${elements.length}<br>
-      Valid: ${results.valid.length}<br>
-      Invalid: ${results.invalid.length}<br>
-      Missing: ${results.missing.length}
+      <p>Total: ${elements.length}</p>
+      <p>Valid: ${results.valid.length}</p>
+      <p>Invalid: ${results.invalid.length}</p>
+      <p>Missing: ${results.missing.length}</p>
     </div>
     <button class="ac-btn" id="ac-toggle">Hide/Display</button>
+    <button class="ac-btn" id="ac-cleanup">Remove all</button>
   `;
-  document.body.appendChild(panel);
+  fragment.appendChild(panel);
 
   // Add visual indicators
-  const fragment = document.createDocumentFragment();
   elements.forEach(function (element) {
     const label = document.createElement("p");
     label.className = "ac-indicator";
 
     if (element.hasAttribute("autocomplete")) {
       const value = element.getAttribute("autocomplete");
-      const isValid = allowedValues.includes(value);
-      const validStatus = isValid
-        ? '<span role="status">Valid</span>'
-        : '<span role="alert">Invalid</span>';
+      const validation = validateAutocomplete(value);
+      const parts = value.split(" ");
 
-      label.innerHTML = `autocomplete="${value}" ${validStatus}`;
-      label.className += isValid ? " ac-valid" : " ac-invalid";
+      let details = parts.length > 1 ? ` (Combined: ${parts.join(" + ")})` : "";
+
+      label.innerHTML = `autocomplete="${value}"
+        <span role="${validation.isValid ? "status" : "alert"}">
+          ${validation.isValid ? " Valid" : " Invalid"}${details}
+        </span>`;
+      label.setAttribute("data-details", validation.message);
+      label.className += validation.isValid ? " ac-valid" : " ac-invalid";
     } else {
       label.className += " ac-missing";
       label.textContent = "autocomplete missing";
+      label.setAttribute("data-details", "Autocomplete attribute recommended");
     }
 
-    fragment.appendChild(label);
     element.parentNode.insertBefore(label, element.nextSibling);
   });
 
-  // Event handlers
+  // Add complete fragment to DOM
+  document.body.appendChild(fragment);
+
+  // Add event listeners for toggle and cleanup
   document.getElementById("ac-toggle")?.addEventListener("click", () => {
     document
       .querySelectorAll(".ac-indicator")
       .forEach((el) => el.classList.toggle("ac-hidden"));
   });
+
+  document.getElementById("ac-cleanup")?.addEventListener("click", cleanup);
 })();
