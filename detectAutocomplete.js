@@ -89,99 +89,170 @@ javascript: (function () {
   `;
   fragment.appendChild(style);
 
-  // HTML5 autocomplete valid values
-  const allowedValues = [
+  // Define Maps for allowed values with metadata
+  const allowedValuesMap = new Map([
     // General purpose
-    "on",
-    "off",
-    // Names
-    "name",
-    "given-name",
-    "additional-name",
-    "family-name",
-    // Contact info
-    "email",
-    "tel",
-    "url",
-    // Address fields
-    "street-address",
-    "address-line1",
-    "address-line2",
-    "address-line3",
-    "address-level1",
-    "address-level2",
-    "address-level3",
-    "address-level4",
-    "country",
-    "country-name",
-    "postal-code",
-    // Payment info
-    "cc-name",
-    "cc-given-name",
-    "cc-additional-name",
-    "cc-family-name",
-    "cc-number",
-    "cc-exp",
-    "cc-exp-month",
-    "cc-exp-year",
-    "cc-csc",
-    "cc-type",
-    "transaction-currency",
-    "transaction-amount",
-    // Personal info
-    "bday",
-    "bday-day",
-    "bday-month",
-    "bday-year",
-    "sex",
-    "gender",
-    "organization",
-    "organization-title",
-    "language",
-    // Login credentials
-    "username",
-    "new-password",
-    "current-password",
-    "one-time-code",
-    // Phone numbers
-    "tel-country-code",
-    "tel-national",
-    "tel-area-code",
-    "tel-local",
-    "tel-extension",
-    "impp",
-    "photo",
-    // Combined values
-    "shipping-name",
-    "shipping-given-name",
-    "shipping-family-name",
-    "shipping-street-address",
-    "shipping-postal-code",
-    "shipping-country",
-    "billing-name",
-    "billing-given-name",
-    "billing-family-name",
-    "billing-street-address",
-    "billing-postal-code",
-    "billing-country",
-    "home-email",
-    "work-email",
-    "mobile-tel",
-    "home-tel",
-    "work-tel",
-    "fax-tel",
-    "pager-tel",
-  ];
+    [
+      "on",
+      {
+        category: "general",
+        description: "Enable autocomplete",
+        validation: "standalone",
+      },
+    ],
+    [
+      "off",
+      {
+        category: "general",
+        description: "Disable autocomplete",
+        validation: "standalone",
+      },
+    ],
 
-  const allowedSections = [
-    "shipping",
-    "billing",
-    "home",
-    "work",
-    "mobile",
-    "fax",
-    "pager",
-  ];
+    // Names
+    [
+      "name",
+      {
+        category: "names",
+        description: "Full name",
+        validation: "standard",
+      },
+    ],
+    [
+      "given-name",
+      {
+        category: "names",
+        description: "First name",
+        validation: "standard",
+      },
+    ],
+    [
+      "additional-name",
+      {
+        category: "names",
+        description: "Middle name",
+        validation: "standard",
+      },
+    ],
+    [
+      "family-name",
+      {
+        category: "names",
+        description: "Last name",
+        validation: "standard",
+      },
+    ],
+
+    // Contact
+    [
+      "email",
+      {
+        category: "contact",
+        description: "Email address",
+        validation: "standard",
+      },
+    ],
+    [
+      "tel",
+      {
+        category: "contact",
+        description: "Phone number",
+        validation: "standard",
+      },
+    ],
+    [
+      "url",
+      {
+        category: "contact",
+        description: "Website URL",
+        validation: "standard",
+      },
+    ],
+
+    // Address
+    [
+      "street-address",
+      {
+        category: "address",
+        description: "Street address",
+        validation: "standard",
+      },
+    ],
+    [
+      "country",
+      {
+        category: "address",
+        description: "Country",
+        validation: "standard",
+      },
+    ],
+    [
+      "postal-code",
+      {
+        category: "address",
+        description: "Postal/ZIP code",
+        validation: "standard",
+      },
+    ],
+
+    // Payment
+    [
+      "cc-name",
+      {
+        category: "payment",
+        description: "Card holder name",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "cc-number",
+      {
+        category: "payment",
+        description: "Card number",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "cc-exp",
+      {
+        category: "payment",
+        description: "Card expiration",
+        validation: "sensitive",
+      },
+    ],
+  ]);
+
+  // Define Map for sections
+  const allowedSectionsMap = new Map([
+    [
+      "shipping",
+      {
+        validFields: ["name", "street-address", "postal-code", "country"],
+        description: "Shipping information",
+      },
+    ],
+    [
+      "billing",
+      {
+        validFields: ["name", "street-address", "postal-code", "country"],
+        description: "Billing information",
+      },
+    ],
+    [
+      "home",
+      {
+        validFields: ["tel", "email"],
+        description: "Home contact",
+      },
+    ],
+    [
+      "work",
+      {
+        validFields: ["tel", "email"],
+        description: "Work contact",
+      },
+    ],
+  ]);
 
   // Validate autocomplete value with enhanced rules
   function validateAutocomplete(value) {
