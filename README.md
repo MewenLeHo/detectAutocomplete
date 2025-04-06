@@ -19,7 +19,7 @@ A simple tool for validating the `autocomplete` attributes of HTML form elements
 
 1. Create a new bookmark in your browser
 2. Copy the minified code provided in `detectAutocomplete.min.js`
-3. Paste it as the bookmark URL (must start with `javascript:`)
+3. Paste it as the bookmark URL
 
 ## Usage
 
@@ -48,7 +48,7 @@ The tool now supports:
 - `home`: For home contact details
 - `work`: For work-related information
 
-### S## Supported Autocomplete Values
+### Supported Autocomplete Values
 
 The tool validates against official HTML autocomplete attributes including:
 
