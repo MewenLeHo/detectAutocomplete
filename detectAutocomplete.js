@@ -112,38 +112,42 @@ javascript: (function () {
     // Names
     [
       "name",
-      {
-        category: "names",
-        description: "Full name",
-        validation: "standard",
-      },
+      { category: "names", description: "Full name", validation: "standard" },
     ],
     [
       "given-name",
-      {
-        category: "names",
-        description: "First name",
-        validation: "standard",
-      },
+      { category: "names", description: "First name", validation: "standard" },
     ],
     [
       "additional-name",
+      { category: "names", description: "Middle name", validation: "standard" },
+    ],
+    [
+      "family-name",
+      { category: "names", description: "Last name", validation: "standard" },
+    ],
+    [
+      "honorific-prefix",
       {
         category: "names",
-        description: "Middle name",
+        description: "Title prefix (Mr., Dr., etc.)",
         validation: "standard",
       },
     ],
     [
-      "family-name",
+      "honorific-suffix",
       {
         category: "names",
-        description: "Last name",
+        description: "Title suffix (Jr., PhD, etc.)",
         validation: "standard",
       },
     ],
+    [
+      "nickname",
+      { category: "names", description: "Nickname", validation: "standard" },
+    ],
 
-    // Contact
+    // Contact info
     [
       "email",
       {
@@ -168,6 +172,14 @@ javascript: (function () {
         validation: "standard",
       },
     ],
+    [
+      "impp",
+      {
+        category: "contact",
+        description: "Instant messaging URL",
+        validation: "standard",
+      },
+    ],
 
     // Address
     [
@@ -179,10 +191,66 @@ javascript: (function () {
       },
     ],
     [
+      "address-line1",
+      {
+        category: "address",
+        description: "Address line 1",
+        validation: "standard",
+      },
+    ],
+    [
+      "address-line2",
+      {
+        category: "address",
+        description: "Address line 2",
+        validation: "standard",
+      },
+    ],
+    [
+      "address-line3",
+      {
+        category: "address",
+        description: "Address line 3",
+        validation: "standard",
+      },
+    ],
+    [
+      "address-level1",
+      {
+        category: "address",
+        description: "State/Province",
+        validation: "standard",
+      },
+    ],
+    [
+      "address-level2",
+      { category: "address", description: "City", validation: "standard" },
+    ],
+    [
+      "address-level3",
+      { category: "address", description: "District", validation: "standard" },
+    ],
+    [
+      "address-level4",
+      {
+        category: "address",
+        description: "Neighborhood",
+        validation: "standard",
+      },
+    ],
+    [
       "country",
       {
         category: "address",
-        description: "Country",
+        description: "Country code",
+        validation: "standard",
+      },
+    ],
+    [
+      "country-name",
+      {
+        category: "address",
+        description: "Country name",
         validation: "standard",
       },
     ],
@@ -200,7 +268,31 @@ javascript: (function () {
       "cc-name",
       {
         category: "payment",
-        description: "Card holder name",
+        description: "Full name on card",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "cc-given-name",
+      {
+        category: "payment",
+        description: "First name on card",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "cc-additional-name",
+      {
+        category: "payment",
+        description: "Middle name on card",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "cc-family-name",
+      {
+        category: "payment",
+        description: "Last name on card",
         validation: "sensitive",
       },
     ],
@@ -216,8 +308,226 @@ javascript: (function () {
       "cc-exp",
       {
         category: "payment",
-        description: "Card expiration",
+        description: "Expiration date",
         validation: "sensitive",
+      },
+    ],
+    [
+      "cc-exp-month",
+      {
+        category: "payment",
+        description: "Expiration month",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "cc-exp-year",
+      {
+        category: "payment",
+        description: "Expiration year",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "cc-csc",
+      {
+        category: "payment",
+        description: "Security code",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "cc-type",
+      {
+        category: "payment",
+        description: "Card type",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "transaction-currency",
+      {
+        category: "payment",
+        description: "Transaction currency",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "transaction-amount",
+      {
+        category: "payment",
+        description: "Transaction amount",
+        validation: "sensitive",
+      },
+    ],
+
+    // Personal
+    [
+      "bday",
+      {
+        category: "personal",
+        description: "Full birthday",
+        validation: "standard",
+      },
+    ],
+    [
+      "bday-day",
+      {
+        category: "personal",
+        description: "Birthday day",
+        validation: "standard",
+      },
+    ],
+    [
+      "bday-month",
+      {
+        category: "personal",
+        description: "Birthday month",
+        validation: "standard",
+      },
+    ],
+    [
+      "bday-year",
+      {
+        category: "personal",
+        description: "Birthday year",
+        validation: "standard",
+      },
+    ],
+    [
+      "sex",
+      {
+        category: "personal",
+        description: "Biological sex",
+        validation: "standard",
+      },
+    ],
+    [
+      "gender",
+      {
+        category: "personal",
+        description: "Gender identity",
+        validation: "standard",
+      },
+    ],
+    [
+      "organization",
+      {
+        category: "personal",
+        description: "Company name",
+        validation: "standard",
+      },
+    ],
+    [
+      "organization-title",
+      {
+        category: "personal",
+        description: "Job title",
+        validation: "standard",
+      },
+    ],
+    [
+      "language",
+      {
+        category: "personal",
+        description: "Preferred language",
+        validation: "standard",
+      },
+    ],
+    [
+      "photo",
+      {
+        category: "personal",
+        description: "Photo URL",
+        validation: "standard",
+      },
+    ],
+
+    // Credentials
+    [
+      "username",
+      {
+        category: "credentials",
+        description: "Username",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "new-password",
+      {
+        category: "credentials",
+        description: "New password",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "current-password",
+      {
+        category: "credentials",
+        description: "Current password",
+        validation: "sensitive",
+      },
+    ],
+    [
+      "one-time-code",
+      {
+        category: "credentials",
+        description: "One-time code",
+        validation: "sensitive",
+      },
+    ],
+
+    // Phone details
+    [
+      "tel-country-code",
+      {
+        category: "phone",
+        description: "Country code",
+        validation: "standard",
+      },
+    ],
+    [
+      "tel-national",
+      {
+        category: "phone",
+        description: "National number",
+        validation: "standard",
+      },
+    ],
+    [
+      "tel-area-code",
+      { category: "phone", description: "Area code", validation: "standard" },
+    ],
+    [
+      "tel-local",
+      {
+        category: "phone",
+        description: "Local number",
+        validation: "standard",
+      },
+    ],
+    [
+      "tel-local-prefix",
+      {
+        category: "phone",
+        description: "First part of local number",
+        validation: "standard",
+      },
+    ],
+    [
+      "tel-local-suffix",
+      {
+        category: "phone",
+        description: "Last part of local number",
+        validation: "standard",
+      },
+    ],
+    [
+      "tel-extension",
+      {
+        category: "phone",
+        description: "Extension number",
+        validation: "standard",
       },
     ],
   ]);
@@ -227,29 +537,146 @@ javascript: (function () {
     [
       "shipping",
       {
-        validFields: ["name", "street-address", "postal-code", "country"],
-        description: "Shipping information",
+        validFields: new Set([
+          "name",
+          "given-name",
+          "additional-name",
+          "family-name",
+          "honorific-prefix",
+          "honorific-suffix",
+          "street-address",
+          "address-line1",
+          "address-line2",
+          "address-line3",
+          "address-level1",
+          "address-level2",
+          "address-level3",
+          "address-level4",
+          "country",
+          "country-name",
+          "postal-code",
+          "tel",
+          "tel-country-code",
+          "tel-national",
+          "tel-area-code",
+          "tel-local",
+          "tel-local-prefix",
+          "tel-local-suffix",
+          "tel-extension",
+          "email",
+        ]),
       },
     ],
     [
       "billing",
       {
-        validFields: ["name", "street-address", "postal-code", "country"],
-        description: "Billing information",
+        validFields: new Set([
+          "name",
+          "given-name",
+          "additional-name",
+          "family-name",
+          "honorific-prefix",
+          "honorific-suffix",
+          "street-address",
+          "address-line1",
+          "address-line2",
+          "address-line3",
+          "address-level1",
+          "address-level2",
+          "address-level3",
+          "address-level4",
+          "country",
+          "country-name",
+          "postal-code",
+          "tel",
+          "tel-country-code",
+          "tel-national",
+          "tel-area-code",
+          "tel-local",
+          "tel-local-prefix",
+          "tel-local-suffix",
+          "tel-extension",
+          "email",
+        ]),
       },
     ],
     [
       "home",
       {
-        validFields: ["tel", "email"],
-        description: "Home contact",
+        validFields: new Set([
+          "tel",
+          "tel-country-code",
+          "tel-national",
+          "tel-area-code",
+          "tel-local",
+          "tel-local-prefix",
+          "tel-local-suffix",
+          "tel-extension",
+          "email",
+          "impp",
+        ]),
       },
     ],
     [
       "work",
       {
-        validFields: ["tel", "email"],
-        description: "Work contact",
+        validFields: new Set([
+          "tel",
+          "tel-country-code",
+          "tel-national",
+          "tel-area-code",
+          "tel-local",
+          "tel-local-prefix",
+          "tel-local-suffix",
+          "tel-extension",
+          "email",
+          "impp",
+        ]),
+      },
+    ],
+    [
+      "mobile",
+      {
+        validFields: new Set([
+          "tel",
+          "tel-country-code",
+          "tel-national",
+          "tel-area-code",
+          "tel-local",
+          "tel-local-prefix",
+          "tel-local-suffix",
+          "tel-extension",
+        ]),
+      },
+    ],
+    [
+      "fax",
+      {
+        validFields: new Set([
+          "tel",
+          "tel-country-code",
+          "tel-national",
+          "tel-area-code",
+          "tel-local",
+          "tel-local-prefix",
+          "tel-local-suffix",
+          "tel-extension",
+        ]),
+      },
+    ],
+    [
+      "pager",
+      {
+        validFields: new Set([
+          "tel",
+          "tel-country-code",
+          "tel-national",
+          "tel-area-code",
+          "tel-local",
+          "tel-local-prefix",
+          "tel-local-suffix",
+          "tel-extension",
+        ]),
       },
     ],
   ]);
@@ -275,7 +702,7 @@ javascript: (function () {
     if (parts[0].startsWith("section-")) {
       return {
         isValid:
-          parts.length >= 2 && allowedValues.includes(parts[parts.length - 1]),
+          parts.length >= 2 && allowedValuesMap.has(parts[parts.length - 1]),
         message:
           parts.length < 2
             ? "Section must be followed by a value"
@@ -284,12 +711,15 @@ javascript: (function () {
     }
 
     // Check section consistency
-    if (allowedSections.includes(parts[0])) {
-      const isValid =
-        parts.length >= 2 && allowedValues.includes(parts[parts.length - 1]);
+    if (allowedSectionsMap.has(parts[0])) {
+      const isValidSection =
+        parts.length >= 2 &&
+        allowedSectionsMap
+          .get(parts[0])
+          .validFields.has(parts[parts.length - 1]);
       return {
-        isValid,
-        message: isValid
+        isValid: isValidSection,
+        message: isValidSection
           ? "Valid combined value"
           : "Invalid section combination",
       };
@@ -297,10 +727,8 @@ javascript: (function () {
 
     // Standard value validation
     return {
-      isValid: allowedValues.includes(parts[0]),
-      message: allowedValues.includes(parts[0])
-        ? "Valid value"
-        : "Invalid value",
+      isValid: allowedValuesMap.has(parts[0]),
+      message: allowedValuesMap.has(parts[0]) ? "Valid value" : "Invalid value",
     };
   }
 
@@ -336,40 +764,49 @@ javascript: (function () {
   fragment.appendChild(panel);
 
   // Add visual indicators
-  elements.forEach(function (element) {
-    const label = document.createElement("p");
-    label.className = "ac-indicator";
+  requestAnimationFrame(() => {
+    elements.forEach(function (element) {
+      const label = document.createElement("p");
+      label.className = "ac-indicator";
 
-    if (element.hasAttribute("autocomplete")) {
-      const value = element.getAttribute("autocomplete");
-      const validation = validateAutocomplete(value);
-      const parts = value.split(" ");
+      if (element.hasAttribute("autocomplete")) {
+        const value = element.getAttribute("autocomplete");
+        const validation = validateAutocomplete(value);
+        const parts = value.split(" ");
+        const details =
+          parts.length > 1 ? ` (Combined: ${parts.join(" + ")})` : "";
 
-      let details = parts.length > 1 ? ` (Combined: ${parts.join(" + ")})` : "";
+        label.innerHTML = `autocomplete="${value}"
+          <span role="${validation.isValid ? "status" : "alert"}">
+            ${validation.isValid ? " Valid" : " Invalid"}${details}
+          </span>`;
+        label.setAttribute("data-details", validation.message);
+        label.className += validation.isValid ? " ac-valid" : " ac-invalid";
+      } else {
+        label.className += " ac-missing";
+        label.textContent = "autocomplete missing";
+        label.setAttribute(
+          "data-details",
+          "Autocomplete attribute recommended"
+        );
+      }
 
-      label.innerHTML = `autocomplete="${value}"
-        <span role="${validation.isValid ? "status" : "alert"}">
-          ${validation.isValid ? " Valid" : " Invalid"}${details}
-        </span>`;
-      label.setAttribute("data-details", validation.message);
-      label.className += validation.isValid ? " ac-valid" : " ac-invalid";
-    } else {
-      label.className += " ac-missing";
-      label.textContent = "autocomplete missing";
-      label.setAttribute("data-details", "Autocomplete attribute recommended");
-    }
-
-    element.parentNode.insertBefore(label, element.nextSibling);
+      element.parentNode.insertBefore(label, element.nextSibling);
+    });
   });
 
   // Add complete fragment to DOM
-  document.body.appendChild(fragment);
+  requestAnimationFrame(() => {
+    document.body.appendChild(fragment);
+  });
 
   // Add event listeners for toggle and cleanup
   document.getElementById("ac-toggle")?.addEventListener("click", () => {
-    document
-      .querySelectorAll(".ac-indicator")
-      .forEach((el) => el.classList.toggle("ac-hidden"));
+    requestAnimationFrame(() => {
+      document
+        .querySelectorAll(".ac-indicator")
+        .forEach((el) => el.classList.toggle("ac-hidden"));
+    });
   });
 
   document.getElementById("ac-cleanup")?.addEventListener("click", cleanup);
