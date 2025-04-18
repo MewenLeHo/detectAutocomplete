@@ -403,14 +403,6 @@ javascript: (function () {
       },
     ],
     [
-      "gender",
-      {
-        category: "personal",
-        description: "Gender identity",
-        validation: "standard",
-      },
-    ],
-    [
       "organization",
       {
         category: "personal",
@@ -537,6 +529,8 @@ javascript: (function () {
     [
       "shipping",
       {
+        type: "address-contact-only",
+        description: "Shipping address or contact information only",
         validFields: new Set([
           "name",
           "given-name",
@@ -570,6 +564,8 @@ javascript: (function () {
     [
       "billing",
       {
+        type: "address-contact-only",
+        description: "Billing address or contact information only",
         validFields: new Set([
           "name",
           "given-name",
@@ -681,11 +677,52 @@ javascript: (function () {
     ],
   ]);
 
-  // Validate autocomplete value with enhanced rules
   function validateAutocomplete(value) {
     if (!value) return { isValid: false, message: "Empty value" };
 
-    const parts = value.toLowerCase().split(" ");
+    // Check for leading/trailing spaces
+    if (value.trim() !== value) {
+      return {
+        isValid: false,
+        message: "Leading or trailing spaces are not allowed",
+      };
+    }
+
+    // Check for non-canonical case
+    const hasNonCanonicalCase = value !== value.toLowerCase();
+
+    // Split and clean empty tokens
+    const parts = value.toLowerCase().split(" ").filter(Boolean);
+    const firstToken = parts[0];
+
+    // Check for multiple sections first
+    const sections = parts.filter((part) => part.startsWith("section-"));
+    if (sections.length > 1) {
+      return {
+        isValid: false,
+        message: "Multiple section-* prefixes are not allowed",
+      };
+    }
+
+    // Validate first token position
+    if (
+      !allowedSectionsMap.has(firstToken) &&
+      !(firstToken.startsWith("section-") && firstToken.length > 8) &&
+      !allowedValuesMap.has(firstToken) &&
+      !["on", "off"].includes(firstToken)
+    ) {
+      // Check if next token is a valid section
+      const nextToken = parts[1];
+      const suggestion =
+        nextToken && allowedSectionsMap.has(nextToken)
+          ? `. Did you mean "section-${nextToken}"?`
+          : "";
+
+      return {
+        isValid: false,
+        message: `Invalid: "section-" must be immediately followed by a value (no spaces after the hyphen)${suggestion}`,
+      };
+    }
 
     // Special cases: on/off
     if (["on", "off"].includes(parts[0])) {
@@ -694,44 +731,67 @@ javascript: (function () {
         message:
           parts.length > 1
             ? "'on' and 'off' must be used alone"
+            : hasNonCanonicalCase
+            ? `Valid value (canonical form: ${value.toLowerCase()})`
             : "Valid value",
+      };
+    }
+
+    // Check for multiple sections
+    const standardSections = parts.filter((part) =>
+      allowedSectionsMap.has(part)
+    );
+    if (standardSections.length > 1) {
+      return {
+        isValid: false,
+        message: "Multiple sections are not allowed",
       };
     }
 
     // Section validation
     if (parts[0].startsWith("section-")) {
+      const isValid =
+        parts.length >= 2 && allowedValuesMap.has(parts[parts.length - 1]);
       return {
-        isValid:
-          parts.length >= 2 && allowedValuesMap.has(parts[parts.length - 1]),
+        isValid,
         message:
           parts.length < 2
-            ? "Section must be followed by a value"
+            ? `Invalid: "${parts[0]}" must be followed by a valid field name (name, email, tel, etc.)`
+            : hasNonCanonicalCase
+            ? `Valid section (canonical form: ${value.toLowerCase()})`
             : "Valid section",
       };
     }
 
     // Check section consistency
     if (allowedSectionsMap.has(parts[0])) {
+      const section = allowedSectionsMap.get(parts[0]);
       const isValidSection =
-        parts.length >= 2 &&
-        allowedSectionsMap
-          .get(parts[0])
-          .validFields.has(parts[parts.length - 1]);
+        parts.length >= 2 && section.validFields.has(parts[parts.length - 1]);
       return {
         isValid: isValidSection,
-        message: isValidSection
-          ? "Valid combined value"
-          : "Invalid section combination",
+        message:
+          parts.length < 2
+            ? `Invalid: "${parts[0]}" section must be followed by a valid field (name, address, etc.)`
+            : isValidSection
+            ? hasNonCanonicalCase
+              ? `Valid combined value (canonical form: ${value.toLowerCase()})`
+              : "Valid combined value"
+            : `Invalid: ${parts[0]} can only be combined with address or contact information`,
       };
     }
 
     // Standard value validation
+    const isValid = allowedValuesMap.has(parts[0]);
     return {
-      isValid: allowedValuesMap.has(parts[0]),
-      message: allowedValuesMap.has(parts[0]) ? "Valid value" : "Invalid value",
+      isValid,
+      message: isValid
+        ? hasNonCanonicalCase
+          ? `Valid value (canonical form: ${value.toLowerCase()})`
+          : "Valid value"
+        : "Invalid value",
     };
   }
-
   // Analyze form elements
   elements.forEach(function (element) {
     if (element.hasAttribute("autocomplete")) {
@@ -772,19 +832,33 @@ javascript: (function () {
       if (element.hasAttribute("autocomplete")) {
         const value = element.getAttribute("autocomplete");
         const validation = validateAutocomplete(value);
-        const parts = value.split(" ");
-        const details =
-          parts.length > 1 ? ` (Combined: ${parts.join(" + ")})` : "";
+        const parts = value.toLowerCase().split(" ").filter(Boolean);
 
-        label.innerHTML = `autocomplete="${value}"
-          <span role="${validation.isValid ? "status" : "alert"}">
-            ${validation.isValid ? " Valid" : " Invalid"}${details}
-          </span>`;
+        // Create separate elements for better control
+        const valueSpan = document.createElement("span");
+        valueSpan.textContent = `autocomplete="${value}"`;
+
+        const statusSpan = document.createElement("span");
+        statusSpan.setAttribute(
+          "role",
+          validation.isValid ? "status" : "alert"
+        );
+        statusSpan.textContent = validation.isValid ? " Valid" : " Invalid";
+
+        if (parts.length > 1) {
+          statusSpan.textContent += ` (Combined: ${parts.join(" + ")})`;
+        }
+
+        // Assemble elements
+        label.appendChild(valueSpan);
+        label.appendChild(statusSpan);
+
+        // Add additional attributes
         label.setAttribute("data-details", validation.message);
         label.className += validation.isValid ? " ac-valid" : " ac-invalid";
       } else {
-        label.className += " ac-missing";
         label.textContent = "autocomplete missing";
+        label.className += " ac-missing";
         label.setAttribute(
           "data-details",
           "Autocomplete attribute recommended"
@@ -798,16 +872,22 @@ javascript: (function () {
   // Add complete fragment to DOM
   requestAnimationFrame(() => {
     document.body.appendChild(fragment);
-  });
 
-  // Add event listeners for toggle and cleanup
-  document.getElementById("ac-toggle")?.addEventListener("click", () => {
-    requestAnimationFrame(() => {
-      document
-        .querySelectorAll(".ac-indicator")
-        .forEach((el) => el.classList.toggle("ac-hidden"));
-    });
-  });
+    // Add event listeners after elements are in DOM
+    const toggleButton = document.getElementById("ac-toggle");
+    if (toggleButton) {
+      toggleButton.addEventListener("click", () => {
+        requestAnimationFrame(() => {
+          document
+            .querySelectorAll(".ac-indicator")
+            .forEach((el) => el.classList.toggle("ac-hidden"));
+        });
+      });
+    }
 
-  document.getElementById("ac-cleanup")?.addEventListener("click", cleanup);
+    const cleanupButton = document.getElementById("ac-cleanup");
+    if (cleanupButton) {
+      cleanupButton.addEventListener("click", cleanup);
+    }
+  });
 })();
