@@ -690,6 +690,32 @@ javascript: (function () {
   function validateAutocomplete(value) {
     if (!value) return { isValid: false, message: "Empty value" };
 
+    // Check for control characters
+    if (value.match(/[\x00-\x1F\x7F]/)) {
+      return {
+        isValid: false,
+        message:
+          "Invalid: autocomplete value cannot contain control characters",
+      };
+    }
+
+    // Check for HTML special characters (encoded or not)
+    if (value.match(/[<>&]|&lt;|&gt;|&amp;/)) {
+      return {
+        isValid: false,
+        message:
+          "Invalid: autocomplete value cannot contain HTML special characters",
+      };
+    }
+
+    // Check for newlines in value
+    if (value.includes("\n") || value.includes("\r")) {
+      return {
+        isValid: false,
+        message: "Invalid: autocomplete value cannot contain line breaks",
+      };
+    }
+
     // Check for leading/trailing spaces
     if (value.trim() !== value) {
       return {
@@ -853,6 +879,14 @@ javascript: (function () {
 
     // Section validation
     if (parts[0].startsWith("section-")) {
+      // Check for quotes in section name
+      if (parts[0].includes('"') || parts[0].includes("'")) {
+        return {
+          isValid: false,
+          message: "Invalid: section name cannot contain quotes",
+        };
+      }
+
       // Check for non-ASCII characters in section name
       if (containsNonASCII(parts[0])) {
         return {
