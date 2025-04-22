@@ -677,6 +677,16 @@ javascript: (function () {
     ],
   ]);
 
+  // Check for non-ASCII characters in string (returns true if found)
+  function containsNonASCII(str) {
+    return /[^\x00-\x7F]/.test(str);
+  }
+
+  // Check for any tabs or multiple spaces within the string
+  function hasExtraWhitespace(str) {
+    return /[ ]{2,}|\t/.test(str);
+  }
+
   function validateAutocomplete(value) {
     if (!value) return { isValid: false, message: "Empty value" };
 
@@ -688,11 +698,89 @@ javascript: (function () {
       };
     }
 
+    // Check for value starting with hyphen
+    if (value.startsWith("-")) {
+      return {
+        isValid: false,
+        message: "Invalid: autocomplete value cannot start with a hyphen",
+      };
+    }
+
+    // Check raw string for section format issues before any splitting/normalization
+    const rawValue = value.toLowerCase();
+
+    // Check for space between "section" and "-" (section -billing)
+    if (rawValue.match(/section [- ]/)) {
+      return {
+        isValid: false,
+        message:
+          'Invalid: no space allowed in "section-" prefix (format must be "section-" immediately followed by value)',
+      };
+    }
+
+    // Check for double hyphen in section (section--billing)
+    if (rawValue.includes("section--")) {
+      return {
+        isValid: false,
+        message:
+          'Invalid: section prefix must have exactly one hyphen (format must be "section-")',
+      };
+    }
+
+    // Check for empty section value (section- )
+    if (rawValue.includes("section- ") || rawValue.includes("section-\t")) {
+      return {
+        isValid: false,
+        message:
+          "Invalid: section prefix must be followed by a value (section-billing, section-shipping, etc.)",
+      };
+    }
+
+    // Check for invalid variations of the section prefix (like 'sect-' or 'sections-')
+    const hasInvalidSectionPrefix = value
+      .toLowerCase()
+      .split(" ")
+      .some(
+        (part) =>
+          (part.startsWith("sect-") || part.startsWith("sections-")) &&
+          !part.startsWith("section-")
+      );
+
+    if (hasInvalidSectionPrefix) {
+      return {
+        isValid: false,
+        message: 'Invalid: section prefix must be exactly "section-"',
+        suggestion: value.replace(/(sect|sections)-/, "section-"),
+      };
+    }
+
+    // Check for section without hyphen (like 'sectionbilling' instead of 'section-billing')
+    const hasSectionWithoutHyphen = value
+      .toLowerCase()
+      .split(" ")
+      .some(
+        (part) =>
+          part.startsWith("section") &&
+          part.length > 7 &&
+          part.charAt(7) !== "-"
+      );
+
+    if (hasSectionWithoutHyphen) {
+      return {
+        isValid: false,
+        message: "Invalid: section prefix must include a hyphen (section-)",
+        suggestion: value.replace("section", "section-"),
+      };
+    }
+
     // Check for non-canonical case
     const hasNonCanonicalCase = value !== value.toLowerCase();
 
     // Split and clean empty tokens
-    const parts = value.toLowerCase().split(" ").filter(Boolean);
+    const parts = value
+      .toLowerCase()
+      .split(/[ \t]+/)
+      .filter(Boolean);
     const firstToken = parts[0];
 
     // Check for multiple sections first
@@ -704,6 +792,21 @@ javascript: (function () {
       };
     }
 
+    // Check for section- tokens in wrong position
+    const sectionTokens = parts.filter((part) => part.startsWith("section-"));
+    if (sectionTokens.length > 0) {
+      if (!parts[0].startsWith("section-")) {
+        return {
+          isValid: false,
+          message:
+            "Invalid: section-* prefix must be at the start of the autocomplete attribute",
+          suggestion: `${sectionTokens[0]} ${parts
+            .filter((part) => !part.startsWith("section-"))
+            .join(" ")}`,
+        };
+      }
+    }
+
     // Validate first token position
     if (
       !allowedSectionsMap.has(firstToken) &&
@@ -711,16 +814,16 @@ javascript: (function () {
       !allowedValuesMap.has(firstToken) &&
       !["on", "off"].includes(firstToken)
     ) {
-      // Check if next token is a valid section
-      const nextToken = parts[1];
-      const suggestion =
-        nextToken && allowedSectionsMap.has(nextToken)
-          ? `. Did you mean "section-${nextToken}"?`
-          : "";
-
+      if (firstToken.startsWith("section")) {
+        return {
+          isValid: false,
+          message:
+            'Invalid: "section-" must be immediately followed by a value (no spaces after the hyphen)',
+        };
+      }
       return {
         isValid: false,
-        message: `Invalid: "section-" must be immediately followed by a value (no spaces after the hyphen)${suggestion}`,
+        message: `Invalid: "${firstToken}" is not a valid autocomplete token`,
       };
     }
 
@@ -750,13 +853,31 @@ javascript: (function () {
 
     // Section validation
     if (parts[0].startsWith("section-")) {
-      const isValid =
-        parts.length >= 2 && allowedValuesMap.has(parts[parts.length - 1]);
+      // Check for non-ASCII characters in section name
+      if (containsNonASCII(parts[0])) {
+        return {
+          isValid: false,
+          message: "Invalid: section name must contain only ASCII characters",
+        };
+      }
+
+      // Check if the last token is a valid field name
+      const lastToken = parts[parts.length - 1];
+      const isValid = parts.length >= 2 && allowedValuesMap.has(lastToken);
+
+      // Check for multiple whitespace characters (spaces or tabs)
+      const hasExtraSpaces = hasExtraWhitespace(value);
+      const canonicalForm = parts.join(" "); // normalized form with single spaces
+
       return {
         isValid,
         message:
           parts.length < 2
-            ? `Invalid: "${parts[0]}" must be followed by a valid field name (name, email, tel, etc.)`
+            ? `Invalid: "${parts[0]}" must be followed by a valid field name`
+            : !isValid
+            ? `Invalid: "${lastToken}" is not a valid field name`
+            : hasExtraSpaces
+            ? `Valid but contains extra whitespace (canonical form: ${canonicalForm})`
             : hasNonCanonicalCase
             ? `Valid section (canonical form: ${value.toLowerCase()})`
             : "Valid section",
@@ -792,6 +913,7 @@ javascript: (function () {
         : "Invalid value",
     };
   }
+
   // Analyze form elements
   elements.forEach(function (element) {
     if (element.hasAttribute("autocomplete")) {
