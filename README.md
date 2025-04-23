@@ -32,16 +32,18 @@ A simple tool for validating the `autocomplete` attributes of HTML form elements
 
 **Documentation**:
 - Generate validation reports
+- Export detailed CSV audits
 - Document form implementations
 - Track compliance issues
+- Create accessibility reports
 
 
 ## Latest Updates
-- Enhanced error messages for `section-` cases with syntax error suggestions
-- Added validation for spacing after `section-`
-- Implemented better handling of complex section cases
-- Optimized control panel user interface
-- Added comprehensive tests for `section` validation cases
+- Added CSV export functionality for validation results
+- Implemented dark/light theme toggle
+- Enhanced visual feedback with animation effects
+- Added comprehensive data export including validation details
+- Improved control panel with flexible button layout
 
 
 ## Installation
@@ -68,6 +70,8 @@ A simple tool for validating the `autocomplete` attributes of HTML form elements
 4. Use the control panel features:
    - View validation statistics
    - Toggle visual indicators
+   - Switch between dark/light themes
+   - Export results to CSV
    - Hide/Show the control panel
    - Remove all indicators
    - Re-run validation
@@ -87,6 +91,12 @@ A simple tool for validating the `autocomplete` attributes of HTML form elements
 - Microsoft Edge (Chromium-based)
 
 **Note**: The bookmarklet uses modern JavaScript features. Older browser versions may not be supported.
+
+**Enhanced features support**:
+- CSV export functionality
+- Theme switching capabilities
+- Animation effects
+- Flexible UI layout
 
 
 ## Best Practices
@@ -121,6 +131,16 @@ A simple tool for validating the `autocomplete` attributes of HTML form elements
   - Section prefix validation
   - Token format validation
   - Syntax correction suggestions
+- <span aria-hidden="true">💾</span> **Export Capabilities**: Generate detailed CSV reports of validation results
+- <span aria-hidden="true">🌓</span> **Theme Support**: Toggle between light and dark themes
+- <span aria-hidden="true">✨</span> **Enhanced UI**: Smooth animations and improved visual feedback
+
+**UI Components**:
+- Flexible control panel
+- Theme switching
+- Export functionality
+- Animation effects
+- Status indicators
 
 
 ## Validation Features
@@ -148,6 +168,13 @@ The tool now supports:
 **Error handling**:
 - Syntax error detection
 - Correction suggestions for syntax errors
+
+**Export capabilities**:
+- Comprehensive CSV reports
+- Detailed validation data
+- Field metadata export
+- Status and error reporting
+- Data-details inclusion
 
 
 ### Supported Sections
@@ -202,6 +229,12 @@ The tool provides different types of feedback:
 - Field type associations
 - Content appropriateness
 
+**Export format**:
+- CSV-friendly error formatting
+- Detailed validation status
+- Comprehensive field information
+- Data-details inclusion
+- Structured reporting format
 
 ## Technical Improvements
 
@@ -212,6 +245,17 @@ The tool provides different types of feedback:
 - **User interface**: Enhanced control panel
 - **Testing**: Comprehensive test suite
 - **Code structure**: Modular and maintainable architecture
+- **Export system**: Comprehensive CSV export functionality
+- **Theme handling**: Dynamic theme switching support
+- **Animation system**: Smooth transitions and visual feedback
+- **UI enhancements**: Flexible control panel layout
+
+**New features**:
+- CSV generation and download
+- Theme management system
+- Animation framework
+- Enhanced UI components
+- Flexible control panel
 
 
 ## Tool Architecture
@@ -222,6 +266,9 @@ The tool provides different types of feedback:
 - Token Parser: Processes multiple token combinations
 - Error Manager: Generates contextual error messages
 - UI Controller: Manages visual feedback and control panel
+- Export Manager: Handles CSV generation and download
+- Theme Controller: Manages theme switching and preferences
+- Animation Handler: Controls UI transitions and effects
 
 **Validation flow**:
 1. Form element detection
@@ -230,21 +277,36 @@ The tool provides different types of feedback:
 4. Section validation
 5. Error processing
 6. Visual feedback
+7. Data export
 
 
 ## Performance Considerations
 
-**Optimization features**:
+**DOM Optimization**:
 - Efficient DOM traversal
 - Minimal reflows and repaints
+- DocumentFragment for batch updates
 - RequestAnimationFrame for UI updates
+
+**Data Processing**:
 - Modular validation process
+- Efficient CSV data generation
+- Optimized data structure handling
+- Memory-efficient export handling
+
+**UI Performance**:
+- Smooth animation transitions
+- Optimized theme switching
+- Efficient visual feedback
+- Batched UI updates
 
 **Best practices**:
-- Run on individual pages rather than entire sites
-- Clear previous results before re-running
-- Use the control panel to manage visual indicators
-
+- Run validation on individual pages rather than entire sites
+- Clear previous results before new validation
+- Use control panel for managing visual indicators
+- Export results before clearing
+- Save CSV reports for later analysis
+- Toggle indicators for better performance on complex pages
 
 ## Limitations
 
@@ -276,6 +338,10 @@ For proper implementation guidance, please refer to:
 - **No Installation Required**: Works directly in your browser without additional setup
 - **Detailed Feedback**: Get precise syntax validation with correction suggestions
 - **Professional Auditing**: Comprehensive validation for accessibility experts
+- **Export Capabilities**: Generate detailed CSV reports for documentation
+- **Visual Comfort**: Switch between light and dark themes
+- **Professional Reporting**: Export comprehensive validation data
+- **Enhanced UI**: Smooth animations and clear visual feedback
 
 
 ## Future Improvements
@@ -332,16 +398,36 @@ Feel free to contribute by submitting issues or pull requests to enhance the too
 
 ## Version History
 
-**Current version: 1.0.0**
+**Current version: 1.1.0**
 - Full syntax validation
 - Section prefix support
 - Error suggestions
 - Enhanced UI
+- Added CSV export functionality
+- Implemented theme switching
+- Enhanced UI animations
+- Improved control panel
+- Added comprehensive data export
 
 **Planned updates**:
-- Token order validation
-- Performance optimization
-- Extended documentation
+
+**Validation Enhancements**:
+- Token order validation according to HTML specification
+- Advanced section validation rules
+- Custom validation patterns support
+
+**Performance Optimization**:
+- Validation result caching
+- Improved DOM handling
+
+**Documentation & Reporting**:
+- Extended documentation with examples
+
+**User Experience**:
+- Advanced animation controls
+- Keyboard shortcuts
+- Accessibility improvements
+- Enhanced visual feedback
 
 
 ## Contributors

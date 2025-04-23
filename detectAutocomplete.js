@@ -34,7 +34,7 @@ javascript: (function () {
       border-radius: 5px;
       box-shadow: 0 0 10px rgba(0, 0, 0, .2);
       z-index: 99999;
-      max-width: 300px;
+      max-width: 250px;
       font-family: -apple-system, system-ui, sans-serif;
     }
     #ac-panel-title {
@@ -77,6 +77,11 @@ javascript: (function () {
     .ac-hidden {
       display: none;
     }
+    .ac-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
     .ac-btn {
       margin: 5px;
       padding: 5px 10px;
@@ -85,6 +90,62 @@ javascript: (function () {
       background: #0d6efd;
       color: #fff;
       cursor: pointer;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .ac-panel {
+      animation: fadeIn 0.5s ease-out;
+    }
+    .ac-indicator {
+      animation: fadeIn 0.3s ease-out;
+    }
+    @media (prefers-color-scheme: dark) {
+      .ac-panel {
+        background: #1e1e1e;
+        color: #f0f0f0;
+      }
+      .ac-stats {
+        background: #2c2c2c;
+      }
+      .ac-valid {
+        background-color: #4caf50;
+        border-left-color: #cfc;
+      }
+      .ac-invalid {
+        background-color: #f44336;
+        border-left-color: #fcc;
+      }
+      .ac-missing {
+        background-color: #ff9800;
+        border-left-color: #ffc;
+      }
+    }
+    body.ac-dark .ac-panel {
+      background: #1e1e1e;
+      color: #eee;
+    }
+    body.ac-dark .ac-stats {
+      background: #2c2c2c;
+    }
+    body.ac-dark .ac-valid {
+      background-color: #4caf50;
+      border-left-color: #cfc;
+    }
+    body.ac-dark .ac-invalid {
+      background-color: #f44336;
+      border-left-color: #fcc;
+    }
+    body.ac-dark .ac-missing {
+      background-color: #ff9800;
+      border-left-color: #ffc;
     }
   `;
   fragment.appendChild(style);
@@ -974,8 +1035,12 @@ javascript: (function () {
       <p>Invalid: ${results.invalid.length}</p>
       <p>Missing: ${results.missing.length}</p>
     </div>
-    <button class="ac-btn" id="ac-toggle">Hide/Display</button>
-    <button class="ac-btn" id="ac-cleanup">Remove all</button>
+    <div class="ac-footer">
+      <button class="ac-btn" id="ac-toggle">Hide/Display</button>
+      <button class="ac-btn" id="ac-cleanup">Remove all</button>
+      <button class="ac-btn" id="ac-theme">Dark/Light</button>
+      <button class="ac-btn" id="ac-export">Export to CSV</button>
+    </div>
   `;
   fragment.appendChild(panel);
 
@@ -1025,6 +1090,66 @@ javascript: (function () {
     });
   });
 
+  // Export to CSV
+  function exportToCSV() {
+    // CSV header with all columns including data-details
+    const header =
+      "Tag,Name,Type,Autocomplete,Status,Validation Message,Data Details,Value\n";
+
+    const csv =
+      header +
+      Array.from(elements)
+        .map((el) => {
+          // Get autocomplete attribute or mark as missing
+          const autocomplete = el.getAttribute("autocomplete") || "missing";
+
+          // Validate autocomplete value if present
+          const validation =
+            autocomplete !== "missing"
+              ? validateAutocomplete(autocomplete)
+              : { isValid: false, message: "Missing autocomplete attribute" };
+
+          // Set status based on validation result
+          const status = validation.isValid ? "Valid" : "Invalid";
+
+          // Find the associated indicator element to get data-details
+          const indicator = el.nextElementSibling;
+          const dataDetails =
+            indicator && indicator.classList.contains("ac-indicator")
+              ? (indicator.getAttribute("data-details") || "").replace(
+                  /,/g,
+                  ";"
+                )
+              : "No details";
+
+          // Return array of values, joined by commas
+          return [
+            el.tagName.toLowerCase(), // HTML tag (input, select, etc.)
+            el.name || "no-name", // Field name attribute
+            el.type || "no-type", // Field type attribute
+            autocomplete, // Autocomplete value
+            status, // Validation status
+            validation.message.replace(/,/g, ";"), // Validation message (commas replaced)
+            dataDetails, // Data-details content
+            el.value || "empty", // Current field value
+          ].join(",");
+        })
+        .join("\n");
+
+    // Create and trigger download
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `autocomplete-audit-${new Date()
+      .toISOString()
+      .slice(0, 10)}.csv`;
+    a.click();
+
+    // Cleanup
+    URL.revokeObjectURL(url);
+  }
+
   // Add complete fragment to DOM
   requestAnimationFrame(() => {
     document.body.appendChild(fragment);
@@ -1039,6 +1164,20 @@ javascript: (function () {
             .forEach((el) => el.classList.toggle("ac-hidden"));
         });
       });
+    }
+
+    const themeButton = document.getElementById("ac-theme");
+    if (themeButton) {
+      themeButton.addEventListener("click", () => {
+        requestAnimationFrame(() => {
+          document.body.classList.toggle("ac-dark");
+        });
+      });
+    }
+
+    const exportButton = document.getElementById("ac-export");
+    if (exportButton) {
+      exportButton.addEventListener("click", exportToCSV);
     }
 
     const cleanupButton = document.getElementById("ac-cleanup");
