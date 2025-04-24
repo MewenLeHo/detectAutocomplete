@@ -91,6 +91,17 @@ javascript: (function () {
       color: #fff;
       cursor: pointer;
     }
+    .ac-btn:focus {
+      outline: 2px solid #0d6efd;
+      outline-offset: 2px;
+      box-shadow: 0 0 10px rgba(13, 110, 253, 0.25);
+    }
+    @media (forced-colors: active) {
+      .ac-btn:focus {
+        outline: 3px solid #000;
+        outline-offset: 3px;
+      }
+    }
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -101,11 +112,13 @@ javascript: (function () {
         transform: translateY(0);
       }
     }
-    .ac-panel {
-      animation: fadeIn 0.5s ease-out;
-    }
-    .ac-indicator {
-      animation: fadeIn 0.3s ease-out;
+    @media (prefers-reduced-motion: no-preference) {
+      .ac-panel {
+        animation: fadeIn 0.5s ease-out;
+      }
+      .ac-indicator {
+        animation: fadeIn 0.3s ease-out;
+      }
     }
     @media (prefers-color-scheme: dark) {
       .ac-panel {
@@ -1025,7 +1038,8 @@ javascript: (function () {
   // Display results panel
   const panel = document.createElement("div");
   panel.className = "ac-panel";
-  panel.setAttribute("role", "region");
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-modal", "true");
   panel.setAttribute("aria-labelledby", "ac-panel-title");
   panel.innerHTML = `
     <p id="ac-panel-title">detectAutocomplete</p>
@@ -1036,11 +1050,14 @@ javascript: (function () {
       <p>Missing: ${results.missing.length}</p>
     </div>
     <div class="ac-footer">
-      <button class="ac-btn" id="ac-toggle">Hide/Display</button>
-      <button class="ac-btn" id="ac-cleanup">Remove all</button>
-      <button class="ac-btn" id="ac-theme">Dark/Light</button>
-      <button class="ac-btn" id="ac-export">Export to CSV</button>
+      <button class="ac-btn" id="ac-toggle" aria-label="Hide/Display autocomplete indicators">Hide/Display</button>
+      <button class="ac-btn" id="ac-cleanup" aria-label="Close the panel and remove all indicators">Close</button>
+      <button class="ac-btn" id="ac-theme" aria-label="Dark/Light mode toggle">Dark/Light</button>
+      <button class="ac-btn" id="ac-export" aria-label="Export to CSV the autocomplete audit results">Export to CSV</button>
     </div>
+    <p>
+      <small>Use Esc to close panel</small>
+    </p>
   `;
   fragment.appendChild(panel);
 
@@ -1152,7 +1169,24 @@ javascript: (function () {
 
   // Add complete fragment to DOM
   requestAnimationFrame(() => {
-    document.body.appendChild(fragment);
+    document.body.insertBefore(fragment, document.body.firstChild);
+    const panel = document.querySelector(".ac-panel");
+
+    // Focus
+    if (panel) {
+      const firstButton = panel.querySelector("button");
+      if (firstButton) {
+        firstButton.focus();
+      }
+
+      // Escape shortcut
+      panel.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          cleanup();
+          document.activeElement?.blur();
+        }
+      });
+    }
 
     // Add event listeners after elements are in DOM
     const toggleButton = document.getElementById("ac-toggle");
