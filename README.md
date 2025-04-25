@@ -5,7 +5,7 @@ A simple tool for validating the `autocomplete` attributes of HTML form elements
 
 ## Demo
 
-[Check out the demo](https://mewenleho.github.io/detectAutocomplete/page/docs/)
+[Check out the demo](https://mewenleho.github.io/detectAutocomplete/)
 
 
 ## Quick Start Guide
