@@ -3,6 +3,11 @@
 A simple tool for validating the `autocomplete` attributes of HTML form elements according to the HTML specification.
 
 
+## Demo
+
+[Check out the demo](https://mewenleho.github.io/detectAutocomplete/page/demo/)
+
+
 ## Quick Start Guide
 
 **For auditors**:

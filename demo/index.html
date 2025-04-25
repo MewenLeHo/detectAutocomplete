@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>detectAutocomplete – Demo</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 2rem;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    fieldset {
+      margin-bottom: 2rem;
+      border: 1px solid #ccc;
+      padding: 1rem;
+    }
+
+    legend {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+
+    input,
+    select {
+      display: block;
+      padding: 0.4rem;
+      margin-top: 0.2rem;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .launch-btn {
+      background: #0d6efd;
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+
+    .launch-btn:hover {
+      background: #084298;
+    }
+
+    .note {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 1rem;
+    }
+
+    code {
+      background: #f5f5f5;
+      padding: 0.1rem 0.3rem;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1><span aria-hidden="true">🔍</span> Autocomplete Attribute Audit – Demo</h1>
+  <p>This demo lets you test a bookmarklet that audits <code>autocomplete</code> attributes on form elements.</p>
+
+  <fieldset>
+    <legend><span aria-hidden="true">✅</span> Valid values</legend>
+    <label>
+      First name:
+      <input type="text" name="first" autocomplete="given-name" />
+    </label>
+    <label>
+      Email:
+      <input type="email" name="email" autocomplete="email" />
+    </label>
+    <label>
+      Credit card number:
+      <input type="text" name="cc" autocomplete="cc-number" />
+    </label>
+    <label>
+      Birthday:
+      <input type="date" name="birth" autocomplete="bday" />
+    </label>
+    <label>
+      Password:
+      <input type="password" name="newpass" autocomplete="new-password" />
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend><span aria-hidden="true">❌</span> Invalid values</legend>
+    <label>
+      Name (invalid token):
+      <input type="text" name="name" autocomplete="fullname" />
+    </label>
+    <label>
+      Telephone (bad format):
+      <input type="tel" name="tel" autocomplete="tel-section home" />
+    </label>
+    <label>
+      Custom value (invalid token):
+      <input type="text" name="custom" autocomplete="my-custom-field" />
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend><span aria-hidden="true">⚠️</span> Missing <code>autocomplete</code></legend>
+    <label>
+      Job title:
+      <input type="text" name="job" />
+    </label>
+    <label>
+      Country:
+      <select name="country">
+        <option value="">Select</option>
+        <option>France</option>
+        <option>Germany</option>
+      </select>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend><span aria-hidden="true">🧪</span> Edge cases</legend>
+    <label>
+      Extra spaces:
+      <input type="text" autocomplete="  given-name   " />
+    </label>
+    <label>
+      Mixed casing (valid):
+      <input type="text" autocomplete="Email" />
+    </label>
+    <label>
+      Section prefix (valid):
+      <input type="text" autocomplete="section-shipping street-address" />
+    </label>
+    <label>
+      Section prefix (invalid):
+      <input type="text" autocomplete="section- shipping" />
+    </label>
+    <label>
+      Bad section name (invalid):
+      <input type="text" autocomplete="sections-address email" />
+    </label>
+  </fieldset>
+
+  <button class="launch-btn" id="runAudit">Run Autocomplete Audit</button>
+  <p class="note">The audit script will be dynamically loaded and executed.</p>
+
+  <p class="note">
+    <span aria-hidden="true">ℹ️</span> Learn more in the <a
+      href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute"
+      target="_blank" rel="noopener">HTML Standard for the autocomplete attribute</a>.
+  </p>
+</body>
+
+
+<script>
+  const btn = document.getElementById('runAudit');
+  btn.addEventListener('click', runAudit);
+  function runAudit() {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/gh/MewenLeHo/detectAutocomplete@main/detectAutocomplete.min.js";
+    document.body.appendChild(script);
+  }
+</script>
+
+</html>
