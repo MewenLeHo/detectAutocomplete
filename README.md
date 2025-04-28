@@ -2,26 +2,23 @@
 
 A simple tool for validating the `autocomplete` attributes of HTML form elements according to the HTML specification.
 
-
 ## Demo
 
 [Check out the demo](https://mewenleho.github.io/detectAutocomplete/)
 
-
 ## Quick Start Guide
 
 **For auditors**:
-1. Install the bookmarklet
-2. Visit a page with forms
-3. Click to validate
-4. Review results
+- Install the bookmarklet
+- Visit a page with forms
+- Click to validate
+- Review results
 
 **For developers**:
-1. Fork the repository
-2. Review source code
-3. Run test suite
-4. Submit improvements
-
+- Fork the repository
+- Review source code
+- Run test suite
+- Submit improvements
 
 ## Common Use Cases
 
@@ -38,403 +35,660 @@ A simple tool for validating the `autocomplete` attributes of HTML form elements
 **Documentation**:
 - Generate validation reports
 - Export detailed CSV audits
-- Document form implementations
 - Track compliance issues
 - Create accessibility reports
 
-
 ## Latest Updates
-- Added CSV export functionality for validation results
-- Implemented dark/light theme toggle
-- Enhanced visual feedback with animation effects
-- Added comprehensive data export including validation details
-- Improved control panel with flexible button layout
 
+**Core Improvements**:
+- Added CSV export with detailed validation data
+- Enhanced data export capabilities
+- Improved validation engine
 
-## Installation
+**UI & Accessibility**:
+- Dark/light theme with system preference detection
+- Enhanced visual feedback and animations
+- Improved ARIA implementation
 
-1. Create a new bookmark in your browser
-2. Copy the minified code provided in `detectAutocomplete.min.js`
-3. Paste it as the bookmark URL
+**Architecture**:
+- Centralized message system
+- Improved control panel layout
+- Enhanced validation reporting
 
+## Installation & Usage
 
-## Usage
+**Installation**:
+- Create a new bookmark in your browser
+- Copy the minified code from `detectAutocomplete.min.js`
+- Paste it as the bookmark URL
 
-1. Navigate to any webpage with forms
+**Basic Usage**:
+- Navigate to any webpage with forms
+- Click the bookmarklet to start validation
+- Review results and error messages
+- Export reports if needed
 
-2. Click the bookmarklet to start validation:
-   - The tool will scan all form elements
-   - A control panel will appear
-   - Results will be displayed next to form fields
+**Results Indicators**:
+- <span aria-hidden="true">🟢</span> **Green**: Valid autocomplete value
+- <span aria-hidden="true">🔴</span> **Red**: Invalid syntax with suggestion
+- <span aria-hidden="true">🟡</span> **Yellow**: Missing attribute (optional)
 
-3. Review the validation results:
-   - <span aria-hidden="true">🟢</span> **Green**: Valid autocomplete value
-   - <span aria-hidden="true">🔴</span> **Red**: Invalid syntax with correction suggestion
-   - <span aria-hidden="true">🟡</span> **Yellow**: Missing attribute (optional)
-
-4. Use the control panel features:
-   - View validation statistics
-   - Toggle visual indicators
-   - Switch between dark/light themes
-   - Export results to CSV
-   - Hide/Show the control panel
-   - Remove all indicators
-   - Re-run validation
-
-5. Review error messages:
-   - Syntax error descriptions
-   - Correction suggestions when applicable
-   - Reference to HTML specifications
-
-
-## Browser Compatibility
-
-**Supported browsers**:
-- Google Chrome (latest version)
-- Mozilla Firefox (latest version)
-- Safari 14+
-- Microsoft Edge (Chromium-based)
-
-**Note**: The bookmarklet uses modern JavaScript features. Older browser versions may not be supported.
-
-**Enhanced features support**:
-- CSV export functionality
-- Theme switching capabilities
-- Animation effects
-- Flexible UI layout
-
-
-## Best Practices
-
-**Using the tool**:
-- Clear previous results before new validation
-- Review all error messages carefully
-- Use control panel for better visibility
-- Export results for documentation
-
-**Implementation tips**:
-- Focus on syntax correctness
-- Follow HTML specifications
-- Test across different browsers
-- Document special cases
-
-**Validation process**:
-- Start with standard fields
-- Check section implementations
-- Verify complex combinations
-- Document findings
-
-
-## Features
-
-- <span aria-hidden="true">🔍</span> **Comprehensive Scanning**: Analyzes all form elements (`input`, `select`, `textarea`).
-- <span aria-hidden="true">✅</span> **Attribute Validation**: Checks `autocomplete` attributes against HTML standards with syntax correction suggestions.
-- <span aria-hidden="true">🎯</span> **Visual Indicators**: Displays status for valid, invalid, and missing attributes.
-- <span aria-hidden="true">📊</span> **Summary Report**: Provides a quick overview of the analysis results.
-- <span aria-hidden="true">⚙️</span> **Validation Types**:
-  - Syntax validation (format, spaces, special characters)
-  - Section prefix validation
-  - Token format validation
-  - Syntax correction suggestions
-- <span aria-hidden="true">💾</span> **Export Capabilities**: Generate detailed CSV reports of validation results
-- <span aria-hidden="true">🌓</span> **Theme Support**: Toggle between light and dark themes
-- <span aria-hidden="true">✨</span> **Enhanced UI**: Smooth animations and improved visual feedback
-
-**UI Components**:
-- Flexible control panel
+**Control Panel Features**:
+- Validation statistics
+- Visual indicators toggle
 - Theme switching
-- Export functionality
-- Animation effects
-- Status indicators
+- CSV export
+- Panel controls
+- Validation reset
 
+## Core Features
 
-## Validation Features
+**Validation Engine**:
+- <span aria-hidden="true">🔍</span> **Form Analysis**: Comprehensive form element scanning
+- <span aria-hidden="true">✅</span> **Syntax Validation**: Advanced checking with suggestions
+- <span aria-hidden="true">⚙️</span> **Multiple Validation Types**: Syntax, sections, tokens
 
-The tool now supports:
+**User Interface**:
+- <span aria-hidden="true">🎯</span> **Visual Feedback**: Clear status indicators
+- <span aria-hidden="true">🌓</span> **Theme System**: Automatic light/dark modes
+- <span aria-hidden="true">✨</span> **Modern Design**: Responsive layout with animations
 
-**Syntax validation**:
-- Standard autocomplete values
-- Space handling
-- Case-sensitivity validation
-- Valid special characters support
-- Unicode characters validation
-- Leading/trailing spaces detection
+**Accessibility & Export**:
+- <span aria-hidden="true">♿</span> **A11y Support**: Screen reader optimization
+- <span aria-hidden="true">🌐</span> **I18n Ready**: Centralized messaging
+- <span aria-hidden="true">📊</span> **Data Export**: Detailed CSV reports
 
-**Section validation**:
-- Section-based values (shipping, billing, etc.)
-- Section prefix validation
-- Space handling in section prefixes
-
-**Token validation**:
-- Multiple tokens validation
-- Combined values validation
-- Special cases (on/off)
-
-**Error handling**:
-- Syntax error detection
-- Correction suggestions for syntax errors
-
-**Export capabilities**:
-- Comprehensive CSV reports
-- Detailed validation data
-- Field metadata export
-- Status and error reporting
-- Data-details inclusion
-
-
-### Supported Sections
-
-**Standard sections**:
-- `shipping`: For shipping-related fields
-- `billing`: For billing information
-- `home`: For home contact details
-- `work`: For work-related information
-
-
-### Supported Autocomplete Values
-
-The tool validates against official HTML autocomplete attributes including:
+## Supported Values
 
 **Personal Information**:
 - `name`, `given-name`, `family-name`
 - `email`, `tel`, `url`
+- `organization`, `organization-title`
+- `bday`, `sex`, `language`
 
-**Address**:
+**Address Information**:
 - `street-address`, `country`, `postal-code`
 - `address-line1`, `address-line2`
+- `address-level1`, `address-level2`
+- `country-name`
 
-**Payment**:
+**Payment Information**:
 - `cc-name`, `cc-number`, `cc-exp`
 - `cc-type`, `transaction-currency`
+- `transaction-amount`
 
 **Credentials**:
-- `username`, `current-password`, `new-password`
+- `username`, `current-password`
+- `new-password`, `one-time-code`
 
-[See full list of supported values](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute)
+**Section Prefixes**:
+- `shipping`: Shipping information
+- `billing`: Billing details
+- `home`, `work`: Contact information
+- `mobile`, `fax`, `pager`: Phone numbers
 
+[Full list of supported values →](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute)
 
-## Error Messages
+## Technical Architecture
 
-The tool provides different types of feedback:
+**Core Components**:
+- **Validation Layer**:
+  - Syntax and error detection
+  - Section validation
+  - Token processing
+  - Error management
 
-**Syntax validation**:
-- Format errors in autocomplete values
-- Space and special character issues
-- Case sensitivity problems
-- Correction suggestions for syntax errors
+- **Interface Layer**:
+  - Control panel
+  - Theme management
+  - Animation system
+  - Visual feedback
 
-**Section validation**:
-- Section prefix format issues
-- Section naming conventions
-- Space handling in sections
-- Valid section suggestions
+- **Data Layer**:
+  - Message handling
+  - Internationalization
+  - Export system
+  - Metadata management
 
-**What's not included**:
-- Semantic usage recommendations
-- Field type associations
-- Content appropriateness
+**Performance Features**:
+- Optimized DOM operations
+- Efficient animations
+- Batched updates
+- Smart data structures
 
-**Export format**:
-- CSV-friendly error formatting
-- Detailed validation status
-- Comprehensive field information
-- Data-details inclusion
-- Structured reporting format
+**Process Flow**:
+- Form detection
+- Attribute analysis
+- Validation processing
+- Error handling
+- Visual feedback
+- Data export
 
-## Technical Improvements
+## Validation & Error Handling
 
-- **Validation engine**: Multi-level syntax validation system
-- **Error detection**: Precise identification of syntax issues
-- **Suggestion system**: Syntax correction suggestions
-- **Section handling**: Dedicated section prefix validation
-- **User interface**: Enhanced control panel
-- **Testing**: Comprehensive test suite
-- **Code structure**: Modular and maintainable architecture
-- **Export system**: Comprehensive CSV export functionality
-- **Theme handling**: Dynamic theme switching support
-- **Animation system**: Smooth transitions and visual feedback
-- **UI enhancements**: Flexible control panel layout
+**Validation Types**:
+- **Syntax Checking**:
+  - Standard values
+  - Case sensitivity
+  - Special characters
+  - Unicode support
 
-**New features**:
-- CSV generation and download
-- Theme management system
-- Animation framework
-- Enhanced UI components
-- Flexible control panel
+- **Section Analysis**:
+  - Prefix validation
+  - Combined values
+  - Token ordering
+  - Format verification
 
+**Error Management**:
+- Detailed messages
+- Context-specific feedback
+- Correction suggestions
+- Standards references
 
-## Tool Architecture
+**Export Capabilities**:
+- Structured reports
+- Field metadata
+- Validation status
+- Error details
 
-**Core components**:
-- Validation Engine: Handles syntax checking and error detection
-- Section Handler: Manages section-based validation
-- Token Parser: Processes multiple token combinations
-- Error Manager: Generates contextual error messages
-- UI Controller: Manages visual feedback and control panel
-- Export Manager: Handles CSV generation and download
-- Theme Controller: Manages theme switching and preferences
-- Animation Handler: Controls UI transitions and effects
+## Browser Support & Requirements
 
-**Validation flow**:
-1. Form element detection
-2. Attribute parsing
-3. Syntax validation
-4. Section validation
-5. Error processing
-6. Visual feedback
-7. Data export
+**Supported Browsers**:
+- Google Chrome (latest)
+- Mozilla Firefox (latest)
+- Safari 14+
+- Microsoft Edge (Chromium)
 
+**Feature Support**:
+- CSV export
+- Theme switching
+- Animations
+- Flexible UI
 
-## Performance Considerations
+**Requirements**:
+- Modern JavaScript support
+- DOM manipulation capabilities
+- CSS Grid support
+- Local storage (for preferences)
 
-**DOM Optimization**:
-- Efficient DOM traversal
-- Minimal reflows and repaints
-- DocumentFragment for batch updates
-- RequestAnimationFrame for UI updates
-
-**Data Processing**:
-- Modular validation process
-- Efficient CSV data generation
-- Optimized data structure handling
-- Memory-efficient export handling
-
-**UI Performance**:
-- Smooth animation transitions
-- Optimized theme switching
-- Efficient visual feedback
-- Batched UI updates
-
-**Best practices**:
-- Run validation on individual pages rather than entire sites
-- Clear previous results before new validation
-- Use control panel for managing visual indicators
-- Export results before clearing
-- Save CSV reports for later analysis
-- Toggle indicators for better performance on complex pages
-
-## Limitations
+## Limitations & Scope
 
 **Important note**: This is a syntax validation tool only.
 
-**What it DOES**:
-- Validates autocomplete attribute syntax
-- Checks against HTML5 standards
-- Suggests syntax corrections
-- Identifies format errors
+**Included Features**:
+- Syntax validation
+- HTML5 compliance
+- Error detection
+- Correction suggestions
+- Export capabilities
 
-**What it does NOT do**:
-- Recommend which attributes to use
-- Validate semantic field associations
-- Check field content appropriateness
-- Verify business logic
+**Not Included**:
+- Semantic validation
+- Field type checking
+- Content validation
+- Business logic
 
-For proper implementation guidance, please refer to:
-- [HTML Specification](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute)
-- [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html)
+**Technical Limitations**:
+- Browser compatibility
+- Performance constraints
+- DOM manipulation limits
+- Export size limits
 
+## Future Development
 
-## Why Use This?
+**Planned Features**:
+- Advanced token validation
+- Enhanced section rules
+- Custom validation patterns
+- Performance optimizations
 
-- **Enhance Accessibility**: Improve form usability for all users
-- **Optimize Autofill**: Ensure proper browser autofill functionality
-- **Debug Issues**: Identify and resolve form implementation problems
-- **Quality Assurance**: Conduct quick checks for form compliance
-- **No Installation Required**: Works directly in your browser without additional setup
-- **Detailed Feedback**: Get precise syntax validation with correction suggestions
-- **Professional Auditing**: Comprehensive validation for accessibility experts
-- **Export Capabilities**: Generate detailed CSV reports for documentation
-- **Visual Comfort**: Switch between light and dark themes
-- **Professional Reporting**: Export comprehensive validation data
-- **Enhanced UI**: Smooth animations and clear visual feedback
+**Technical Roadmap**:
+- Result caching
+- Enhanced DOM handling
+- Extended API support
+- Automated testing
 
+**Accessibility Improvements**:
+- Enhanced screen reader support
+- Keyboard navigation
+- High contrast modes
+- ARIA enhancements
 
-## Future Improvements
-- Implement token order validation according to HTML specification
-- Enhance performance with validation result caching
-- Improve error reporting with more detailed explanations
-- Create user documentation and usage guidelines
+## Contributing
 
+**Development Process**:
+- Fork repository
+- Create feature branch
+- Follow coding standards
+- Add/update tests
+- Submit pull request
 
-## How to contribute?
-
-Feel free to contribute by submitting issues or pull requests to enhance the tool's functionality or improve documentation. Your feedback is welcome!
-
-**Development**:
-1. Fork the repository
-2. Create a feature branch
-3. Modify the main `detectAutocomplete.js` file
-4. Add/update tests as needed
-5. Submit a pull request
-
-**Testing**:
-- Run existing test cases
-- Add new test cases for new features
-- Test across different browsers
-- Test with various form configurations
+**Testing Requirements**:
+- Unit tests
+- Cross-browser testing
+- Accessibility testing
+- Performance testing
 
 **Documentation**:
-- Improve README clarity
-- Add code comments
-- Update usage examples
-- Report issues and suggestions
+- Code comments
+- README updates
+- Usage examples
+- API documentation
 
-**Note**: Work with the unminified version only. The minified version is automatically generated.
+**Quality Standards**:
+- Code style compliance
+- Test coverage
+- Performance benchmarks
+- Accessibility compliance
 
+**Note**: Work with unminified version only. Minified version is auto-generated.
 
-## Support and Community
+## Support & Community
 
-**Get help**:
-- Review existing issues on GitHub
-- Check documentation
-- Submit detailed bug reports
-
-**Contribute**:
-- Code improvements
-- Test cases
+**Getting Help**:
+- [GitHub Issues](https://github.com/MewenLeHo/detectAutocomplete/issues)
 - Documentation
+- Community discussions
+- Bug reporting guide
+
+**Contributing Opportunities**:
+- Code contributions
+- Documentation improvements
 - Translations
+- Bug reports
+- Feature requests
 
-**Stay updated**:
-- Watch the repository
-- Check release notes
-- Follow contributors
+**Stay Updated**:
+- Release notifications
+- Changelog updates
+- Feature announcements
+- Community news
 
+## Version Information
 
-## Version History
+**Current Version**: 1.2.0
 
-**Current version: 1.1.0**
+**Core Features**:
 - Full syntax validation
 - Section prefix support
 - Error suggestions
+- CSV export
+- Theme switching
 - Enhanced UI
-- Added CSV export functionality
-- Implemented theme switching
-- Enhanced UI animations
-- Improved control panel
-- Added comprehensive data export
 
-**Planned updates**:
+**Recent Improvements**:
+- Centralized message system
+- Enhanced accessibility
+- Improved data export
+- System theme detection
+- Performance optimizations
 
-**Validation Enhancements**:
-- Token order validation according to HTML specification
-- Advanced section validation rules
-- Custom validation patterns support
-
-**Performance Optimization**:
-- Validation result caching
-- Improved DOM handling
-
-**Documentation & Reporting**:
-- Extended documentation with examples
-
-**User Experience**:
-- Advanced animation controls
+**Upcoming Features**:
+- Token order validation
+- Advanced section rules
+- Enhanced error reporting
+- Result caching
+- DOM optimization
 - Keyboard shortcuts
-- Accessibility improvements
-- Enhanced visual feedback
 
+## Project Information
 
-## Contributors
+**Repository**:
+- GitHub: [detectAutocomplete](https://github.com/MewenLeHo/detectAutocomplete)
+- License: MIT
+- Issues: [Bug Tracker](https://github.com/MewenLeHo/detectAutocomplete/issues)
 
+**Contributors**:
 - [Mewen Le Hô](https://github.com/MewenLeHo)
+
+**Resources**:
+- [HTML Specification](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute)
+- [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html)
+- [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete)
+# detectAutocomplete
+
+A simple tool for validating the `autocomplete` attributes of HTML form elements according to the HTML specification.
+
+## Demo
+
+[Check out the demo](https://mewenleho.github.io/detectAutocomplete/)
+
+## Quick Start Guide
+
+**For auditors**:
+- Install the bookmarklet
+- Visit a page with forms
+- Click to validate
+- Review results
+
+**For developers**:
+- Fork the repository
+- Review source code
+- Run test suite
+- Submit improvements
+
+## Common Use Cases
+
+**Accessibility audits**:
+- Form compliance checking
+- Autocomplete implementation review
+- Error detection and reporting
+
+**Development**:
+- Form validation during development
+- Quality assurance testing
+- Cross-browser compatibility checks
+
+**Documentation**:
+- Generate validation reports
+- Export detailed CSV audits
+- Track compliance issues
+- Create accessibility reports
+
+## Latest Updates
+
+**Core Improvements**:
+- Added CSV export with detailed validation data
+- Enhanced data export capabilities
+- Improved validation engine
+
+**UI & Accessibility**:
+- Dark/light theme with system preference detection
+- Enhanced visual feedback and animations
+- Improved ARIA implementation
+
+**Architecture**:
+- Centralized message system
+- Improved control panel layout
+- Enhanced validation reporting
+
+## Installation & Usage
+
+**Installation**:
+- Create a new bookmark in your browser
+- Copy the minified code from `detectAutocomplete.min.js`
+- Paste it as the bookmark URL
+
+**Basic Usage**:
+- Navigate to any webpage with forms
+- Click the bookmarklet to start validation
+- Review results and error messages
+- Export reports if needed
+
+**Results Indicators**:
+- <span aria-hidden="true">🟢</span> **Green**: Valid autocomplete value
+- <span aria-hidden="true">🔴</span> **Red**: Invalid syntax with suggestion
+- <span aria-hidden="true">🟡</span> **Yellow**: Missing attribute (optional)
+
+**Control Panel Features**:
+- Validation statistics
+- Visual indicators toggle
+- Theme switching
+- CSV export
+- Panel controls
+- Validation reset
+
+## Core Features
+
+**Validation Engine**:
+- <span aria-hidden="true">🔍</span> **Form Analysis**: Comprehensive form element scanning
+- <span aria-hidden="true">✅</span> **Syntax Validation**: Advanced checking with suggestions
+- <span aria-hidden="true">⚙️</span> **Multiple Validation Types**: Syntax, sections, tokens
+
+**User Interface**:
+- <span aria-hidden="true">🎯</span> **Visual Feedback**: Clear status indicators
+- <span aria-hidden="true">🌓</span> **Theme System**: Automatic light/dark modes
+- <span aria-hidden="true">✨</span> **Modern Design**: Responsive layout with animations
+
+**Accessibility & Export**:
+- <span aria-hidden="true">♿</span> **A11y Support**: Screen reader optimization
+- <span aria-hidden="true">🌐</span> **I18n Ready**: Centralized messaging
+- <span aria-hidden="true">📊</span> **Data Export**: Detailed CSV reports
+
+## Supported Values
+
+**Personal Information**:
+- `name`, `given-name`, `family-name`
+- `email`, `tel`, `url`
+- `organization`, `organization-title`
+- `bday`, `sex`, `language`
+
+**Address Information**:
+- `street-address`, `country`, `postal-code`
+- `address-line1`, `address-line2`
+- `address-level1`, `address-level2`
+- `country-name`
+
+**Payment Information**:
+- `cc-name`, `cc-number`, `cc-exp`
+- `cc-type`, `transaction-currency`
+- `transaction-amount`
+
+**Credentials**:
+- `username`, `current-password`
+- `new-password`, `one-time-code`
+
+**Section Prefixes**:
+- `shipping`: Shipping information
+- `billing`: Billing details
+- `home`, `work`: Contact information
+- `mobile`, `fax`, `pager`: Phone numbers
+
+[Full list of supported values →](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute)
+
+## Technical Architecture
+
+**Core Components**:
+- **Validation Layer**:
+  - Syntax and error detection
+  - Section validation
+  - Token processing
+  - Error management
+
+- **Interface Layer**:
+  - Control panel
+  - Theme management
+  - Animation system
+  - Visual feedback
+
+- **Data Layer**:
+  - Message handling
+  - Internationalization
+  - Export system
+  - Metadata management
+
+**Performance Features**:
+- Optimized DOM operations
+- Efficient animations
+- Batched updates
+- Smart data structures
+
+**Process Flow**:
+- Form detection
+- Attribute analysis
+- Validation processing
+- Error handling
+- Visual feedback
+- Data export
+
+## Validation & Error Handling
+
+**Validation Types**:
+- **Syntax Checking**:
+  - Standard values
+  - Case sensitivity
+  - Special characters
+  - Unicode support
+
+- **Section Analysis**:
+  - Prefix validation
+  - Combined values
+  - Token ordering
+  - Format verification
+
+**Error Management**:
+- Detailed messages
+- Context-specific feedback
+- Correction suggestions
+- Standards references
+
+**Export Capabilities**:
+- Structured reports
+- Field metadata
+- Validation status
+- Error details
+
+## Browser Support & Requirements
+
+**Supported Browsers**:
+- Google Chrome (latest)
+- Mozilla Firefox (latest)
+- Safari 14+
+- Microsoft Edge (Chromium)
+
+**Feature Support**:
+- CSV export
+- Theme switching
+- Animations
+- Flexible UI
+
+**Requirements**:
+- Modern JavaScript support
+- DOM manipulation capabilities
+- CSS Grid support
+- Local storage (for preferences)
+
+## Limitations & Scope
+
+**Included Features**:
+- Syntax validation
+- HTML5 compliance
+- Error detection
+- Correction suggestions
+- Export capabilities
+
+**Not Included**:
+- Semantic validation
+- Field type checking
+- Content validation
+- Business logic
+
+**Technical Limitations**:
+- Browser compatibility
+- Performance constraints
+- DOM manipulation limits
+- Export size limits
+
+## Future Development
+
+**Planned Features**:
+- Advanced token validation
+- Enhanced section rules
+- Custom validation patterns
+- Performance optimizations
+
+**Technical Roadmap**:
+- Result caching
+- Enhanced DOM handling
+- Extended API support
+- Automated testing
+
+**Accessibility Improvements**:
+- Enhanced screen reader support
+- Keyboard navigation
+- High contrast modes
+- ARIA enhancements
+
+## Contributing
+
+Feel free to contribute by submitting issues or pull requests to enhance the tool's functionality or improve documentation. Your feedback is welcome!
+
+**Development Process**:
+- Fork repository
+- Create feature branch
+- Modify the main `detectAutocomplete.js` file
+- Follow coding standards
+- Add/update tests
+- Submit pull request
+
+**Testing Requirements**:
+- Unit tests
+- Cross-browser testing
+- Accessibility testing
+- Performance testing
+
+**Documentation**:
+- Code comments
+- README updates
+- Usage examples
+- API documentation
+
+**Quality Standards**:
+- Code style compliance
+- Test coverage
+- Performance benchmarks
+- Accessibility compliance
+
+**Note**: Work with unminified version only. Minified version is auto-generated.
+
+## Support & Community
+
+**Getting Help**:
+- [GitHub Issues](https://github.com/MewenLeHo/detectAutocomplete/issues)
+- Documentation
+- Community discussions
+- Bug reporting guide
+
+**Contributing Opportunities**:
+- Code contributions
+- Documentation improvements
+- Translations
+- Bug reports
+- Feature requests
+
+**Stay Updated**:
+- Release notifications
+- Changelog updates
+- Feature announcements
+- Community news
+
+## Version Information
+
+**Current Version**: 1.2.0
+
+**Core Features**:
+- Full syntax validation
+- Section prefix support
+- Error suggestions
+- CSV export
+- Theme switching
+- Enhanced UI
+
+**Recent Improvements**:
+- Centralized message system
+- Enhanced accessibility
+- Improved data export
+- System theme detection
+- Performance optimizations
+
+**Upcoming Features**:
+- Token order validation
+- Advanced section rules
+- Enhanced error reporting
+- Result caching
+- DOM optimization
+- Keyboard shortcuts
+
+## Project Information
+
+**Repository**:
+- GitHub: [detectAutocomplete](https://github.com/MewenLeHo/detectAutocomplete)
+- Issues: [Bug Tracker](https://github.com/MewenLeHo/detectAutocomplete/issues)
+
+**Contributors**:
+- [Mewen Le Hô](https://github.com/MewenLeHo)
+
+**Resources**:
+- [HTML Specification](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute)
+- [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html)
+- [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete)

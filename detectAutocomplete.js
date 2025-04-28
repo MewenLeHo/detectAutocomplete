@@ -9,6 +9,7 @@ javascript: (function () {
   }
   cleanup();
 
+  // Initialize core variables
   // Create DocumentFragment for better performance
   const fragment = document.createDocumentFragment();
 
@@ -20,6 +21,102 @@ javascript: (function () {
     valid: [],
     invalid: [],
     missing: [],
+  };
+
+  // Messages configuration
+  const messages = {
+    validation: {
+      empty: "Empty value",
+      controlChars:
+        "Invalid: autocomplete value cannot contain control characters",
+      htmlChars:
+        "Invalid: autocomplete value cannot contain HTML special characters",
+      lineBreaks: "Invalid: autocomplete value cannot contain line breaks",
+      leadingSpace: "Invalid: leading or trailing spaces are not allowed",
+      startHyphen: "Invalid: autocomplete value cannot start with a hyphen",
+    },
+    section: {
+      spaceInPrefix:
+        'Invalid: no space allowed in "section-" prefix (format must be "section-" immediately followed by value)',
+      doubleHyphen:
+        'Invalid: section prefix must have exactly one hyphen (format must be "section-")',
+      emptyValue:
+        "Invalid: section prefix must be followed by a value (section-billing, section-shipping, etc.)",
+      badPrefix: 'Invalid: section prefix must be exactly "section-"',
+      missingHyphen: "Invalid: section prefix must include a hyphen (section-)",
+      quotes: "Invalid: section name cannot contain quotes",
+      nonAscii: "Invalid: section name must contain only ASCII characters",
+      multipleSections: "Invalid: multiple section-* prefixes are not allowed",
+      wrongPlace:
+        "Invalid: section-* prefix must be at the start of the autocomplete attribute",
+      noSpaceAfterHyphen:
+        'Invalid: "section-" must be immediately followed by a value (no spaces after the hyphen)',
+    },
+    status: {
+      missing: "Autocomplete attribute recommended",
+      notValidToken: (token) =>
+        `Invalid: "${token}" is not a valid autocomplete token`,
+      onOffAlone: "'on' and 'off' must be used alone",
+      validValue: "Valid value",
+      validCanonical: (value) =>
+        `Valid value (canonical form: ${value.toLowerCase()})`,
+      validSection: "Valid section",
+      validSectionCanonical: (value) =>
+        `Valid section (canonical form: ${value.toLowerCase()})`,
+      validCombined: "Valid combined value",
+      validCombinedCanonical: (value) =>
+        `Valid combined value (canonical form: ${value.toLowerCase()})`,
+      extraWhitespace: (canonicalForm) =>
+        `Valid but contains extra whitespace (canonical form: ${canonicalForm})`,
+      invalidFieldName: (token) =>
+        `Invalid: "${token}" is not a valid field name`,
+      mustFollowField: (token) =>
+        `Invalid: "${token}" must be followed by a valid field name`,
+      sectionNeedsField: (token) =>
+        `Invalid: "${token}" section must be followed by a valid field (name, address, etc.)`,
+      addressOnly: (token) =>
+        `Invalid: ${token} can only be combined with address or contact information`,
+    },
+    ui: {
+      panelTitle: "detectAutocomplete",
+      total: (count) => `Total: ${count}`,
+      valid: (count) => `Valid: ${count}`,
+      invalid: (count) => `Invalid: ${count}`,
+      missing: (count) => `Missing: ${count}`,
+      escapeHint: "Use Esc to close panel",
+      exportInfo:
+        "Export a CSV file containing the results of the accessibility analysis: a list of tested items, error types found, and suggested fixes.",
+    },
+    buttons: {
+      hideDisplay: "Hide/Display",
+      close: "Close",
+      darkLight: "Dark/Light",
+      export: "Export to CSV",
+      screenReaderLabels: {
+        indicators: " autocomplete indicators",
+        panel: " the panel and remove all indicators",
+        mode: " mode toggle",
+        results: " the autocomplete audit results",
+      },
+    },
+    indicators: {
+      valid: "Valid",
+      invalid: "Invalid",
+      missing: "autocomplete missing",
+      combined: (parts) => `(Combined: ${parts.join(" + ")})`,
+      autocompletePrefix: (value) => `autocomplete="${value}"`,
+    },
+    csv: {
+      header:
+        "Tag,Name,Type,Autocomplete,Status,Validation Message,Data Details,Value",
+      noName: "no-name",
+      noType: "no-type",
+      empty: "empty",
+      noDetails: "No details",
+      filename: (date) =>
+        `autocomplete-audit-${date.toISOString().slice(0, 10)}.csv`,
+      missingAttribute: "Missing autocomplete attribute",
+    },
   };
 
   // Styles
@@ -774,48 +871,32 @@ javascript: (function () {
   }
 
   function validateAutocomplete(value) {
-    if (!value) return { isValid: false, message: "Empty value" };
+    // Check for empty value
+    if (!value) return { isValid: false, message: messages.validation.empty };
 
     // Check for control characters
     if (value.match(/[\x00-\x1F\x7F]/)) {
-      return {
-        isValid: false,
-        message:
-          "Invalid: autocomplete value cannot contain control characters",
-      };
+      return { isValid: false, message: messages.validation.controlChars };
     }
 
     // Check for HTML special characters (encoded or not)
     if (value.match(/[<>&]|&lt;|&gt;|&amp;/)) {
-      return {
-        isValid: false,
-        message:
-          "Invalid: autocomplete value cannot contain HTML special characters",
-      };
+      return { isValid: false, message: messages.validation.htmlChars };
     }
 
     // Check for newlines in value
     if (value.includes("\n") || value.includes("\r")) {
-      return {
-        isValid: false,
-        message: "Invalid: autocomplete value cannot contain line breaks",
-      };
+      return { isValid: false, message: messages.validation.lineBreaks };
     }
 
     // Check for leading/trailing spaces
     if (value.trim() !== value) {
-      return {
-        isValid: false,
-        message: "Leading or trailing spaces are not allowed",
-      };
+      return { isValid: false, message: messages.validation.leadingSpace };
     }
 
     // Check for value starting with hyphen
     if (value.startsWith("-")) {
-      return {
-        isValid: false,
-        message: "Invalid: autocomplete value cannot start with a hyphen",
-      };
+      return { isValid: false, message: messages.validation.startHyphen };
     }
 
     // Check raw string for section format issues before any splitting/normalization
@@ -823,32 +904,20 @@ javascript: (function () {
 
     // Check for space between "section" and "-" (section -billing)
     if (rawValue.match(/section [- ]/)) {
-      return {
-        isValid: false,
-        message:
-          'Invalid: no space allowed in "section-" prefix (format must be "section-" immediately followed by value)',
-      };
+      return { isValid: false, message: messages.section.spaceInPrefix };
     }
 
     // Check for double hyphen in section (section--billing)
     if (rawValue.includes("section--")) {
-      return {
-        isValid: false,
-        message:
-          'Invalid: section prefix must have exactly one hyphen (format must be "section-")',
-      };
+      return { isValid: false, message: messages.section.doubleHyphen };
     }
 
     // Check for empty section value (section- )
     if (rawValue.includes("section- ") || rawValue.includes("section-\t")) {
-      return {
-        isValid: false,
-        message:
-          "Invalid: section prefix must be followed by a value (section-billing, section-shipping, etc.)",
-      };
+      return { isValid: false, message: messages.section.emptyValue };
     }
 
-    // Check for invalid variations of the section prefix (like 'sect-' or 'sections-')
+    // Check for invalid variations of the section prefix
     const hasInvalidSectionPrefix = value
       .toLowerCase()
       .split(" ")
@@ -861,12 +930,12 @@ javascript: (function () {
     if (hasInvalidSectionPrefix) {
       return {
         isValid: false,
-        message: 'Invalid: section prefix must be exactly "section-"',
+        message: messages.section.badPrefix,
         suggestion: value.replace(/(sect|sections)-/, "section-"),
       };
     }
 
-    // Check for section without hyphen (like 'sectionbilling' instead of 'section-billing')
+    // Check for section without hyphen
     const hasSectionWithoutHyphen = value
       .toLowerCase()
       .split(" ")
@@ -880,7 +949,7 @@ javascript: (function () {
     if (hasSectionWithoutHyphen) {
       return {
         isValid: false,
-        message: "Invalid: section prefix must include a hyphen (section-)",
+        message: messages.section.missingHyphen,
         suggestion: value.replace("section", "section-"),
       };
     }
@@ -895,28 +964,22 @@ javascript: (function () {
       .filter(Boolean);
     const firstToken = parts[0];
 
-    // Check for multiple sections first
+    // Check for multiple sections
     const sections = parts.filter((part) => part.startsWith("section-"));
     if (sections.length > 1) {
-      return {
-        isValid: false,
-        message: "Multiple section-* prefixes are not allowed",
-      };
+      return { isValid: false, message: messages.section.multipleSections };
     }
 
     // Check for section- tokens in wrong position
     const sectionTokens = parts.filter((part) => part.startsWith("section-"));
-    if (sectionTokens.length > 0) {
-      if (!parts[0].startsWith("section-")) {
-        return {
-          isValid: false,
-          message:
-            "Invalid: section-* prefix must be at the start of the autocomplete attribute",
-          suggestion: `${sectionTokens[0]} ${parts
-            .filter((part) => !part.startsWith("section-"))
-            .join(" ")}`,
-        };
-      }
+    if (sectionTokens.length > 0 && !parts[0].startsWith("section-")) {
+      return {
+        isValid: false,
+        message: messages.section.wrongPlace,
+        suggestion: `${sectionTokens[0]} ${parts
+          .filter((part) => !part.startsWith("section-"))
+          .join(" ")}`,
+      };
     }
 
     // Validate first token position
@@ -927,15 +990,11 @@ javascript: (function () {
       !["on", "off"].includes(firstToken)
     ) {
       if (firstToken.startsWith("section")) {
-        return {
-          isValid: false,
-          message:
-            'Invalid: "section-" must be immediately followed by a value (no spaces after the hyphen)',
-        };
+        return { isValid: false, message: messages.section.noSpaceAfterHyphen };
       }
       return {
         isValid: false,
-        message: `Invalid: "${firstToken}" is not a valid autocomplete token`,
+        message: messages.status.notValidToken(firstToken),
       };
     }
 
@@ -945,10 +1004,10 @@ javascript: (function () {
         isValid: parts.length === 1,
         message:
           parts.length > 1
-            ? "'on' and 'off' must be used alone"
+            ? messages.status.onOffAlone
             : hasNonCanonicalCase
-            ? `Valid value (canonical form: ${value.toLowerCase()})`
-            : "Valid value",
+            ? messages.status.validCanonical(value)
+            : messages.status.validValue,
       };
     }
 
@@ -957,50 +1016,41 @@ javascript: (function () {
       allowedSectionsMap.has(part)
     );
     if (standardSections.length > 1) {
-      return {
-        isValid: false,
-        message: "Multiple sections are not allowed",
-      };
+      return { isValid: false, message: messages.section.multipleSections };
     }
 
     // Section validation
     if (parts[0].startsWith("section-")) {
       // Check for quotes in section name
       if (parts[0].includes('"') || parts[0].includes("'")) {
-        return {
-          isValid: false,
-          message: "Invalid: section name cannot contain quotes",
-        };
+        return { isValid: false, message: messages.section.quotes };
       }
 
       // Check for non-ASCII characters in section name
       if (containsNonASCII(parts[0])) {
-        return {
-          isValid: false,
-          message: "Invalid: section name must contain only ASCII characters",
-        };
+        return { isValid: false, message: messages.section.nonAscii };
       }
 
       // Check if the last token is a valid field name
       const lastToken = parts[parts.length - 1];
       const isValid = parts.length >= 2 && allowedValuesMap.has(lastToken);
 
-      // Check for multiple whitespace characters (spaces or tabs)
+      // Check for multiple whitespace characters
       const hasExtraSpaces = hasExtraWhitespace(value);
-      const canonicalForm = parts.join(" "); // normalized form with single spaces
+      const canonicalForm = parts.join(" ");
 
       return {
         isValid,
         message:
           parts.length < 2
-            ? `Invalid: "${parts[0]}" must be followed by a valid field name`
+            ? messages.status.mustFollowField(parts[0])
             : !isValid
-            ? `Invalid: "${lastToken}" is not a valid field name`
+            ? messages.status.invalidFieldName(lastToken)
             : hasExtraSpaces
-            ? `Valid but contains extra whitespace (canonical form: ${canonicalForm})`
+            ? messages.status.extraWhitespace(canonicalForm)
             : hasNonCanonicalCase
-            ? `Valid section (canonical form: ${value.toLowerCase()})`
-            : "Valid section",
+            ? messages.status.validSectionCanonical(value)
+            : messages.status.validSection,
       };
     }
 
@@ -1013,12 +1063,12 @@ javascript: (function () {
         isValid: isValidSection,
         message:
           parts.length < 2
-            ? `Invalid: "${parts[0]}" section must be followed by a valid field (name, address, etc.)`
+            ? messages.status.sectionNeedsField(parts[0])
             : isValidSection
             ? hasNonCanonicalCase
-              ? `Valid combined value (canonical form: ${value.toLowerCase()})`
-              : "Valid combined value"
-            : `Invalid: ${parts[0]} can only be combined with address or contact information`,
+              ? messages.status.validCombinedCanonical(value)
+              : messages.status.validCombined
+            : messages.status.addressOnly(parts[0]),
       };
     }
 
@@ -1028,9 +1078,9 @@ javascript: (function () {
       isValid,
       message: isValid
         ? hasNonCanonicalCase
-          ? `Valid value (canonical form: ${value.toLowerCase()})`
-          : "Valid value"
-        : "Invalid value",
+          ? messages.status.validCanonical(value)
+          : messages.status.validValue
+        : messages.status.notValidToken(parts[0]),
     };
   }
 
@@ -1054,26 +1104,46 @@ javascript: (function () {
   panel.setAttribute("aria-modal", "true");
   panel.setAttribute("aria-labelledby", "ac-panel-title");
   panel.innerHTML = `
-    <p id="ac-panel-title">detectAutocomplete</p>
-    <div class="ac-stats">
-      <p>Total: ${elements.length}</p>
-      <p>Valid: ${results.valid.length}</p>
-      <p>Invalid: ${results.invalid.length}</p>
-      <p>Missing: ${results.missing.length}</p>
-    </div>
-    <div class="ac-footer">
-      <button class="ac-btn" id="ac-toggle">Hide/Display<span class="visually-hidden"> autocomplete indicators</span></button>
-      <button class="ac-btn" id="ac-cleanup">Close<span class="visually-hidden"> the panel and remove all indicators</span></button>
-      <button class="ac-btn" id="ac-theme">Dark/Light<span class="visually-hidden"> mode toggle</span></button>
-      <button class="ac-btn" id="ac-export" aria-describedby="exportInfo">Export to CSV<span class="visually-hidden"> the autocomplete audit results</span></button>
-    </div>
-    <p id="exportInfo" class="visually-hidden">
-      Export a CSV file containing the results of the accessibility analysis: a list of tested items, error types found, and suggested fixes.
-    </p>
-    <p>
-      <small>Use <kbd>Esc</kbd> to close panel</small>
-    </p>
-  `;
+  <p id="ac-panel-title">${messages.ui.panelTitle}</p>
+  <div class="ac-stats">
+    <p>${messages.ui.total(elements.length)}</p>
+    <p>${messages.ui.valid(results.valid.length)}</p>
+    <p>${messages.ui.invalid(results.invalid.length)}</p>
+    <p>${messages.ui.missing(results.missing.length)}</p>
+  </div>
+  <div class="ac-footer">
+    <button class="ac-btn" id="ac-toggle">
+      ${messages.buttons.hideDisplay}
+      <span class="visually-hidden">${
+        messages.buttons.screenReaderLabels.indicators
+      }</span>
+    </button>
+    <button class="ac-btn" id="ac-cleanup">
+      ${messages.buttons.close}
+      <span class="visually-hidden">${
+        messages.buttons.screenReaderLabels.panel
+      }</span>
+    </button>
+    <button class="ac-btn" id="ac-theme">
+      ${messages.buttons.darkLight}
+      <span class="visually-hidden">${
+        messages.buttons.screenReaderLabels.mode
+      }</span>
+    </button>
+    <button class="ac-btn" id="ac-export" aria-describedby="exportInfo">
+      ${messages.buttons.export}
+      <span class="visually-hidden">${
+        messages.buttons.screenReaderLabels.results
+      }</span>
+    </button>
+  </div>
+  <p id="exportInfo" class="visually-hidden">
+    ${messages.ui.exportInfo}
+  </p>
+  <p>
+    <small>${messages.ui.escapeHint}</small>
+  </p>
+`;
   fragment.appendChild(panel);
 
   // Add visual indicators
@@ -1089,17 +1159,19 @@ javascript: (function () {
 
         // Create separate elements for better control
         const valueSpan = document.createElement("span");
-        valueSpan.textContent = `autocomplete="${value}"`;
+        valueSpan.textContent = messages.indicators.autocompletePrefix(value);
 
         const statusSpan = document.createElement("span");
         statusSpan.setAttribute(
           "role",
           validation.isValid ? "status" : "alert"
         );
-        statusSpan.textContent = validation.isValid ? " Valid" : " Invalid";
+        statusSpan.textContent = validation.isValid
+          ? ` ${messages.indicators.valid}`
+          : ` ${messages.indicators.invalid}`;
 
         if (parts.length > 1) {
-          statusSpan.textContent += ` (Combined: ${parts.join(" + ")})`;
+          statusSpan.textContent += ` ${messages.indicators.combined(parts)}`;
         }
 
         // Assemble elements
@@ -1110,12 +1182,9 @@ javascript: (function () {
         label.setAttribute("data-details", validation.message);
         label.className += validation.isValid ? " ac-valid" : " ac-invalid";
       } else {
-        label.textContent = "autocomplete missing";
+        label.textContent = messages.indicators.missing;
         label.className += " ac-missing";
-        label.setAttribute(
-          "data-details",
-          "Autocomplete attribute recommended"
-        );
+        label.setAttribute("data-details", messages.status.missing);
       }
 
       element.parentNode.insertBefore(label, element.nextSibling);
@@ -1125,8 +1194,7 @@ javascript: (function () {
   // Export to CSV
   function exportToCSV() {
     // CSV header with all columns including data-details
-    const header =
-      "Tag,Name,Type,Autocomplete,Status,Validation Message,Data Details,Value\n";
+    const header = messages.csv.header + "\n";
 
     const csv =
       header +
@@ -1139,10 +1207,12 @@ javascript: (function () {
           const validation =
             autocomplete !== "missing"
               ? validateAutocomplete(autocomplete)
-              : { isValid: false, message: "Missing autocomplete attribute" };
+              : { isValid: false, message: messages.csv.missingAttribute };
 
           // Set status based on validation result
-          const status = validation.isValid ? "Valid" : "Invalid";
+          const status = validation.isValid
+            ? messages.indicators.valid
+            : messages.indicators.invalid;
 
           // Find the associated indicator element to get data-details
           const indicator = el.nextElementSibling;
@@ -1152,18 +1222,18 @@ javascript: (function () {
                   /,/g,
                   ";"
                 )
-              : "No details";
+              : messages.csv.noDetails;
 
           // Return array of values, joined by commas
           return [
             el.tagName.toLowerCase(), // HTML tag (input, select, etc.)
-            el.name || "no-name", // Field name attribute
-            el.type || "no-type", // Field type attribute
+            el.name || messages.csv.noName, // Field name attribute
+            el.type || messages.csv.noType, // Field type attribute
             autocomplete, // Autocomplete value
             status, // Validation status
             validation.message.replace(/,/g, ";"), // Validation message (commas replaced)
             dataDetails, // Data-details content
-            el.value || "empty", // Current field value
+            el.value || messages.csv.empty, // Current field value
           ].join(",");
         })
         .join("\n");
@@ -1176,9 +1246,7 @@ javascript: (function () {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `autocomplete-audit-${new Date()
-      .toISOString()
-      .slice(0, 10)}.csv`;
+    a.download = messages.csv.filename(new Date());
     a.click();
 
     // Cleanup
