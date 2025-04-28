@@ -870,136 +870,149 @@ javascript: (function () {
     return /[ ]{2,}|\t/.test(str);
   }
 
-  function validateAutocomplete(value) {
-    // Check for empty value
-    if (!value) return { isValid: false, message: messages.validation.empty };
-
-    // Check for control characters
-    if (value.match(/[\x00-\x1F\x7F]/)) {
-      return { isValid: false, message: messages.validation.controlChars };
-    }
-
-    // Check for HTML special characters (encoded or not)
-    if (value.match(/[<>&]|&lt;|&gt;|&amp;/)) {
-      return { isValid: false, message: messages.validation.htmlChars };
-    }
-
-    // Check for newlines in value
-    if (value.includes("\n") || value.includes("\r")) {
-      return { isValid: false, message: messages.validation.lineBreaks };
-    }
-
-    // Check for leading/trailing spaces
-    if (value.trim() !== value) {
-      return { isValid: false, message: messages.validation.leadingSpace };
-    }
-
-    // Check for value starting with hyphen
-    if (value.startsWith("-")) {
-      return { isValid: false, message: messages.validation.startHyphen };
-    }
-
-    // Check raw string for section format issues before any splitting/normalization
+  function validateSectionPrefix(value) {
     const rawValue = value.toLowerCase();
+    const parts = rawValue.split(/\s+/);
 
-    // Check for space between "section" and "-" (section -billing)
-    if (rawValue.match(/section [- ]/)) {
-      return { isValid: false, message: messages.section.spaceInPrefix };
+    // 1. Basic format validation rules
+    const sectionRules = [
+      {
+        pattern: /section [- ]/,
+        message: messages.section.spaceInPrefix,
+      },
+      {
+        pattern: /section--/,
+        message: messages.section.doubleHyphen,
+      },
+      {
+        pattern: /section-(\s|$)/,
+        message: messages.section.emptyValue,
+      },
+    ];
+
+    for (const rule of sectionRules) {
+      if (rule.pattern.test(rawValue)) {
+        return {
+          isValid: false,
+          message: rule.message,
+        };
+      }
     }
 
-    // Check for double hyphen in section (section--billing)
-    if (rawValue.includes("section--")) {
-      return { isValid: false, message: messages.section.doubleHyphen };
+    // 2. Check section position (must be at start if present)
+    if (rawValue.includes("section-") && !rawValue.startsWith("section-")) {
+      return {
+        isValid: false,
+        message: messages.section.wrongPlace,
+        suggestion: `section-${value.replace(/section-/i, "").trim()}`,
+      };
     }
 
-    // Check for empty section value (section- )
-    if (rawValue.includes("section- ") || rawValue.includes("section-\t")) {
-      return { isValid: false, message: messages.section.emptyValue };
+    // 3. Check for multiple section prefixes
+    const sectionPrefixes = parts.filter((part) => part.startsWith("section-"));
+    if (sectionPrefixes.length > 1) {
+      return {
+        isValid: false,
+        message: messages.section.multipleSections,
+      };
     }
 
-    // Check for invalid variations of the section prefix
-    const hasInvalidSectionPrefix = value
-      .toLowerCase()
-      .split(" ")
-      .some(
-        (part) =>
-          (part.startsWith("sect-") || part.startsWith("sections-")) &&
-          !part.startsWith("section-")
-      );
+    // 4. Check for malformed section prefix
+    const invalidVariant = parts.find(
+      (part) =>
+        (part.startsWith("section") &&
+          part.includes("-") &&
+          !part.startsWith("section-")) ||
+        part.match(/section[a-z]+-/)
+    );
 
-    if (hasInvalidSectionPrefix) {
+    if (invalidVariant) {
       return {
         isValid: false,
         message: messages.section.badPrefix,
-        suggestion: value.replace(/(sect|sections)-/, "section-"),
+        suggestion: value.replace(/section[a-z]*-?/, "section-"),
       };
     }
 
-    // Check for section without hyphen
-    const hasSectionWithoutHyphen = value
-      .toLowerCase()
-      .split(" ")
-      .some(
-        (part) =>
-          part.startsWith("section") &&
-          part.length > 7 &&
-          part.charAt(7) !== "-"
-      );
-
-    if (hasSectionWithoutHyphen) {
+    // 5. Check section content validity
+    if (parts[0].includes('"') || parts[0].includes("'")) {
       return {
         isValid: false,
-        message: messages.section.missingHyphen,
-        suggestion: value.replace("section", "section-"),
+        message: messages.section.quotes,
       };
     }
 
-    // Check for non-canonical case
-    const hasNonCanonicalCase = value !== value.toLowerCase();
+    if (containsNonASCII(parts[0])) {
+      return {
+        isValid: false,
+        message: messages.section.nonAscii,
+      };
+    }
 
-    // Split and clean empty tokens
+    // Return success with metadata
+    return {
+      isValid: true,
+      originalValue: value,
+      hasExtraWhitespace: hasExtraWhitespace(value),
+    };
+  }
+
+  // Validate standard token format and return validation result
+  function validateStandardToken(token, hasNonCanonicalCase) {
+    const isValid = allowedValuesMap.has(token);
+    return {
+      isValid,
+      message: isValid
+        ? hasNonCanonicalCase
+          ? messages.status.validCanonical(token)
+          : messages.status.validValue
+        : messages.status.notValidToken(token),
+    };
+  }
+
+  // Helper function to validate basic format rules
+  function validateBasicFormat(value) {
+    const formatErrors = [
+      { test: !value, message: messages.validation.empty },
+      {
+        test: /[\x00-\x1F\x7F]/.test(value),
+        message: messages.validation.controlChars,
+      },
+      {
+        test: /[<>&]|&lt;|&gt;|&amp;/.test(value),
+        message: messages.validation.htmlChars,
+      },
+      { test: /[\n\r]/.test(value), message: messages.validation.lineBreaks },
+      {
+        test: value.trim() !== value,
+        message: messages.validation.leadingSpace,
+      },
+      { test: value.startsWith("-"), message: messages.validation.startHyphen },
+    ];
+
+    const error = formatErrors.find((error) => error.test);
+    return error
+      ? { isValid: false, message: error.message }
+      : { isValid: true };
+  }
+
+  function validateAutocomplete(value) {
+    // Basic format validation
+    const formatValidation = validateBasicFormat(value);
+    if (!formatValidation.isValid) {
+      return formatValidation;
+    }
+
+    // Normalize and split value
+    const hasNonCanonicalCase = value !== value.toLowerCase();
     const parts = value
       .toLowerCase()
       .split(/[ \t]+/)
       .filter(Boolean);
     const firstToken = parts[0];
 
-    // Check for multiple sections
-    const sections = parts.filter((part) => part.startsWith("section-"));
-    if (sections.length > 1) {
-      return { isValid: false, message: messages.section.multipleSections };
-    }
-
-    // Check for section- tokens in wrong position
-    const sectionTokens = parts.filter((part) => part.startsWith("section-"));
-    if (sectionTokens.length > 0 && !parts[0].startsWith("section-")) {
-      return {
-        isValid: false,
-        message: messages.section.wrongPlace,
-        suggestion: `${sectionTokens[0]} ${parts
-          .filter((part) => !part.startsWith("section-"))
-          .join(" ")}`,
-      };
-    }
-
-    // Validate first token position
-    if (
-      !allowedSectionsMap.has(firstToken) &&
-      !(firstToken.startsWith("section-") && firstToken.length > 8) &&
-      !allowedValuesMap.has(firstToken) &&
-      !["on", "off"].includes(firstToken)
-    ) {
-      if (firstToken.startsWith("section")) {
-        return { isValid: false, message: messages.section.noSpaceAfterHyphen };
-      }
-      return {
-        isValid: false,
-        message: messages.status.notValidToken(firstToken),
-      };
-    }
-
     // Special cases: on/off
-    if (["on", "off"].includes(parts[0])) {
+    if (["on", "off"].includes(firstToken)) {
       return {
         isValid: parts.length === 1,
         message:
@@ -1011,77 +1024,59 @@ javascript: (function () {
       };
     }
 
-    // Check for multiple sections
-    const standardSections = parts.filter((part) =>
-      allowedSectionsMap.has(part)
-    );
-    if (standardSections.length > 1) {
-      return { isValid: false, message: messages.section.multipleSections };
-    }
-
     // Section validation
-    if (parts[0].startsWith("section-")) {
-      // Check for quotes in section name
-      if (parts[0].includes('"') || parts[0].includes("'")) {
-        return { isValid: false, message: messages.section.quotes };
+    if (value.includes("section")) {
+      const sectionValidation = validateSectionPrefix(value);
+      if (!sectionValidation.isValid) {
+        return sectionValidation;
       }
 
-      // Check for non-ASCII characters in section name
-      if (containsNonASCII(parts[0])) {
-        return { isValid: false, message: messages.section.nonAscii };
+      // Additional section validation for valid prefixes
+      if (parts[0].startsWith("section-")) {
+        const lastToken = parts[parts.length - 1];
+        const lastTokenValidation = validateStandardToken(
+          lastToken,
+          hasNonCanonicalCase
+        );
+
+        return {
+          isValid: parts.length >= 2 && lastTokenValidation.isValid,
+          message:
+            parts.length < 2
+              ? messages.status.mustFollowField(parts[0])
+              : !lastTokenValidation.isValid
+              ? messages.status.invalidFieldName(lastToken)
+              : sectionValidation.hasExtraWhitespace
+              ? messages.status.extraWhitespace(parts.join(" "))
+              : hasNonCanonicalCase
+              ? messages.status.validSectionCanonical(value)
+              : messages.status.validSection,
+        };
       }
-
-      // Check if the last token is a valid field name
-      const lastToken = parts[parts.length - 1];
-      const isValid = parts.length >= 2 && allowedValuesMap.has(lastToken);
-
-      // Check for multiple whitespace characters
-      const hasExtraSpaces = hasExtraWhitespace(value);
-      const canonicalForm = parts.join(" ");
-
-      return {
-        isValid,
-        message:
-          parts.length < 2
-            ? messages.status.mustFollowField(parts[0])
-            : !isValid
-            ? messages.status.invalidFieldName(lastToken)
-            : hasExtraSpaces
-            ? messages.status.extraWhitespace(canonicalForm)
-            : hasNonCanonicalCase
-            ? messages.status.validSectionCanonical(value)
-            : messages.status.validSection,
-      };
     }
 
-    // Check section consistency
-    if (allowedSectionsMap.has(parts[0])) {
-      const section = allowedSectionsMap.get(parts[0]);
+    // Standard section validation (shipping, billing, etc.)
+    if (allowedSectionsMap.has(firstToken)) {
+      const section = allowedSectionsMap.get(firstToken);
+      const lastToken = parts[parts.length - 1];
       const isValidSection =
-        parts.length >= 2 && section.validFields.has(parts[parts.length - 1]);
+        parts.length >= 2 && section.validFields.has(lastToken);
+
       return {
         isValid: isValidSection,
         message:
           parts.length < 2
-            ? messages.status.sectionNeedsField(parts[0])
+            ? messages.status.sectionNeedsField(firstToken)
             : isValidSection
             ? hasNonCanonicalCase
               ? messages.status.validCombinedCanonical(value)
               : messages.status.validCombined
-            : messages.status.addressOnly(parts[0]),
+            : messages.status.addressOnly(firstToken),
       };
     }
 
     // Standard value validation
-    const isValid = allowedValuesMap.has(parts[0]);
-    return {
-      isValid,
-      message: isValid
-        ? hasNonCanonicalCase
-          ? messages.status.validCanonical(value)
-          : messages.status.validValue
-        : messages.status.notValidToken(parts[0]),
-    };
+    return validateStandardToken(firstToken, hasNonCanonicalCase);
   }
 
   // Analyze form elements
