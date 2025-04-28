@@ -79,8 +79,7 @@ javascript: (function () {
     }
     .ac-footer {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      flex-direction: column;
     }
     .ac-btn {
       margin: 5px;
@@ -159,6 +158,19 @@ javascript: (function () {
     body.ac-dark .ac-missing {
       background-color: #ff9800;
       border-left-color: #ffc;
+    }
+    .visually-hidden {
+      border: 0 !important;
+      clip: rect(1px, 1px, 1px, 1px) !important;
+      -webkit-clip-path: inset(50%) !important;
+        clip-path: inset(50%) !important;
+      height: 1px !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      padding: 0 !important;
+      position: absolute !important;
+      width: 1px !important;
+      white-space: nowrap !important;
     }
   `;
   fragment.appendChild(style);
@@ -1050,13 +1062,16 @@ javascript: (function () {
       <p>Missing: ${results.missing.length}</p>
     </div>
     <div class="ac-footer">
-      <button class="ac-btn" id="ac-toggle" aria-label="Hide/Display autocomplete indicators">Hide/Display</button>
-      <button class="ac-btn" id="ac-cleanup" aria-label="Close the panel and remove all indicators">Close</button>
-      <button class="ac-btn" id="ac-theme" aria-label="Dark/Light mode toggle">Dark/Light</button>
-      <button class="ac-btn" id="ac-export" aria-label="Export to CSV the autocomplete audit results">Export to CSV</button>
+      <button class="ac-btn" id="ac-toggle">Hide/Display<span class="visually-hidden"> autocomplete indicators</span></button>
+      <button class="ac-btn" id="ac-cleanup">Close<span class="visually-hidden"> the panel and remove all indicators</span></button>
+      <button class="ac-btn" id="ac-theme">Dark/Light<span class="visually-hidden"> mode toggle</span></button>
+      <button class="ac-btn" id="ac-export" aria-describedby="exportInfo">Export to CSV<span class="visually-hidden"> the autocomplete audit results</span></button>
     </div>
+    <p id="exportInfo" class="visually-hidden">
+      Export a CSV file containing the results of the accessibility analysis: a list of tested items, error types found, and suggested fixes.
+    </p>
     <p>
-      <small>Use Esc to close panel</small>
+      <small>Use <kbd>Esc</kbd> to close panel</small>
     </p>
   `;
   fragment.appendChild(panel);
@@ -1153,8 +1168,11 @@ javascript: (function () {
         })
         .join("\n");
 
+    // Add BOM for UTF-8 encoding
+    const bom = "\uFEFF";
+
     // Create and trigger download
-    const blob = new Blob([csv], { type: "text/csv" });
+    const blob = new Blob([bom + csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -1189,9 +1207,21 @@ javascript: (function () {
     }
 
     // Add event listeners after elements are in DOM
+    // Initialize states
+    let isIndicatorsVisible = true;
+    let isDarkMode = false;
+
+    // Handle indicators toggle
     const toggleButton = document.getElementById("ac-toggle");
     if (toggleButton) {
+      toggleButton.setAttribute("aria-pressed", "true"); // Initial state
       toggleButton.addEventListener("click", () => {
+        isIndicatorsVisible = !isIndicatorsVisible;
+        toggleButton.setAttribute(
+          "aria-pressed",
+          isIndicatorsVisible ? "true" : "false"
+        );
+
         requestAnimationFrame(() => {
           document
             .querySelectorAll(".ac-indicator")
@@ -1200,20 +1230,27 @@ javascript: (function () {
       });
     }
 
+    // Handle theme toggle
     const themeButton = document.getElementById("ac-theme");
     if (themeButton) {
+      themeButton.setAttribute("aria-pressed", "false"); // Initial state
       themeButton.addEventListener("click", () => {
+        isDarkMode = !isDarkMode;
+        themeButton.setAttribute("aria-pressed", isDarkMode ? "true" : "false");
+
         requestAnimationFrame(() => {
           document.body.classList.toggle("ac-dark");
         });
       });
     }
 
+    // Handle export button
     const exportButton = document.getElementById("ac-export");
     if (exportButton) {
       exportButton.addEventListener("click", exportToCSV);
     }
 
+    // Handle cleanup button
     const cleanupButton = document.getElementById("ac-cleanup");
     if (cleanupButton) {
       cleanupButton.addEventListener("click", cleanup);
