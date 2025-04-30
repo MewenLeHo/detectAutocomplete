@@ -83,7 +83,7 @@ javascript: (function () {
       valid: (count) => `Valid: ${count}`,
       invalid: (count) => `Invalid: ${count}`,
       missing: (count) => `Missing: ${count}`,
-      escapeHint: "Use Esc to close panel",
+      escapeHint: "Use <kbd>Esc</kbd> to close panel",
       exportInfo:
         "Export a CSV file containing the results of the accessibility analysis: a list of tested items, error types found, and suggested fixes.",
     },
@@ -1138,7 +1138,7 @@ javascript: (function () {
   <p>
     <small>${messages.ui.escapeHint}</small>
   </p>
-`;
+  `;
   fragment.appendChild(panel);
 
   // Add visual indicators
