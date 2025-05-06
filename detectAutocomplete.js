@@ -79,6 +79,10 @@ javascript: (function () {
     },
     ui: {
       panelTitle: "detectAutocomplete",
+      modes: {
+        auditor: "Auditor Mode",
+        developer: "Developer Mode",
+      },
       total: (count) => `Total: ${count}`,
       valid: (count) => `Valid: ${count}`,
       invalid: (count) => `Invalid: ${count}`,
@@ -107,8 +111,7 @@ javascript: (function () {
       autocompletePrefix: (value) => `autocomplete="${value}"`,
     },
     csv: {
-      header:
-        "Tag,Name,Type,Autocomplete,Status,Validation Message,Data Details,Value",
+      header: "Tag,Name,Type,Autocomplete,Status,Validation Details,Value",
       noName: "no-name",
       noType: "no-type",
       empty: "empty",
@@ -147,6 +150,7 @@ javascript: (function () {
       margin: 5px 0;
     }
     .ac-indicator {
+      position: relative;
       background-color: #ff0;
       color: #000;
       display: block;
@@ -198,10 +202,83 @@ javascript: (function () {
         outline-offset: 3px;
       }
     }
+    .ac-details {
+      margin-top: 8px;
+      padding: 8px;
+      border-left: 3px solid currentColor;
+      background: rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .ac-details-toggle {
+      border: none;
+      background: none;
+      padding: 4px;
+      cursor: pointer;
+    }
+    .ac-mode-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .ac-mode-btn {
+      padding: 4px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: none;
+      cursor: pointer;
+    }
+    .ac-mode-btn.active {
+      background: #0d6efd;
+      color: white;
+      border-color: #0d6efd;
+    }
+    [data-ac-mode="auditor"] .ac-details {
+      /* Style simplifié pour le mode auditeur */
+      font-weight: bold;
+    }
+
+    [data-ac-mode="developer"] .ac-details {
+      /* Style détaillé pour le mode développeur */
+      font-family: monospace;
+    }
+    .ac-details {
+      margin-top: 8px;
+      padding: 8px;
+      border-left: 3px solid currentColor;
+      background: rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+    .ac-details-toggle {
+      border: none;
+      background: none;
+      padding: 4px;
+      cursor: pointer;
+    }
+    .ac-details-toggle svg {
+      transition: transform 0.3s ease;
+    }
+    [data-ac-mode="auditor"] .ac-dev-details {
+      display: none;
+    }
+
+    [data-ac-mode="developer"] .ac-auditor-details {
+      display: none;
+    }
     @keyframes fadeIn {
       from {
         opacity: 0;
         transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
       }
       to {
         opacity: 1;
@@ -214,6 +291,9 @@ javascript: (function () {
       }
       .ac-indicator {
         animation: fadeIn 0.3s ease-out;
+      }
+      .ac-details {
+        animation: slideDown 0.3s ease;
       }
     }
     @media (prefers-color-scheme: dark) {
@@ -235,6 +315,9 @@ javascript: (function () {
       .ac-missing {
         background-color: #ff9800;
         border-left-color: #ffc;
+      }
+      .ac-details {
+        background: rgba(255,255,255,0.05);
       }
     }
     body.ac-dark .ac-panel {
@@ -996,6 +1079,27 @@ javascript: (function () {
       : { isValid: true };
   }
 
+  // Helper functions for different message formats
+  function getAuditorMessage(validation) {
+    try {
+      const validationData = JSON.parse(validation);
+      return validationData.isValid
+        ? "Valid autocomplete value"
+        : "Invalid autocomplete value - needs attention";
+    } catch {
+      return validation; // Fallback to original message if parsing fails
+    }
+  }
+
+  function getDeveloperMessage(validation) {
+    try {
+      const validationData = JSON.parse(validation);
+      return validationData.message || validation;
+    } catch {
+      return validation; // Fallback to original message if parsing fails
+    }
+  }
+
   function validateAutocomplete(value) {
     // Basic format validation
     const formatValidation = validateBasicFormat(value);
@@ -1100,6 +1204,14 @@ javascript: (function () {
   panel.setAttribute("aria-labelledby", "ac-panel-title");
   panel.innerHTML = `
   <p id="ac-panel-title">${messages.ui.panelTitle}</p>
+  <div class="ac-mode-selector" role="radiogroup" aria-label="Select view mode">
+    <button class="ac-mode-btn active" data-mode="auditor" aria-pressed="true">
+      ${messages.ui.modes.auditor}
+    </button>
+    <button class="ac-mode-btn" data-mode="developer" aria-pressed="false">
+      ${messages.ui.modes.developer}
+    </button>
+  </div>
   <div class="ac-stats">
     <p>${messages.ui.total(elements.length)}</p>
     <p>${messages.ui.valid(results.valid.length)}</p>
@@ -1144,18 +1256,30 @@ javascript: (function () {
   // Add visual indicators
   requestAnimationFrame(() => {
     elements.forEach(function (element) {
-      const label = document.createElement("p");
-      label.className = "ac-indicator";
+      // Replace the existing label creation with enhanced indicator
+      const indicator = document.createElement("div");
+      indicator.className = "ac-indicator";
 
       if (element.hasAttribute("autocomplete")) {
         const value = element.getAttribute("autocomplete");
         const validation = validateAutocomplete(value);
-        const parts = value.toLowerCase().split(" ").filter(Boolean);
 
-        // Create separate elements for better control
+        // Store validation data for mode switching
+        indicator.dataset.validation = JSON.stringify({
+          isValid: validation.isValid,
+          message: validation.message,
+        });
+
+        // Main content container
+        const mainContent = document.createElement("div");
+        mainContent.className = "ac-main-content";
+
+        // Value display
         const valueSpan = document.createElement("span");
         valueSpan.textContent = messages.indicators.autocompletePrefix(value);
+        mainContent.appendChild(valueSpan);
 
+        // Status display
         const statusSpan = document.createElement("span");
         statusSpan.setAttribute(
           "role",
@@ -1164,31 +1288,82 @@ javascript: (function () {
         statusSpan.textContent = validation.isValid
           ? ` ${messages.indicators.valid}`
           : ` ${messages.indicators.invalid}`;
+        mainContent.appendChild(statusSpan);
 
-        if (parts.length > 1) {
-          statusSpan.textContent += ` ${messages.indicators.combined(parts)}`;
-        }
+        // Details toggle button
+        const toggleBtn = document.createElement("button");
+        toggleBtn.className = "ac-details-toggle";
+        toggleBtn.setAttribute("aria-expanded", "false");
+        toggleBtn.innerHTML = `
+          <span class="visually-hidden">Show details</span>
+          <svg aria-hidden="true" width="12" height="12">
+            <path d="M2 4 L6 8 L10 4" stroke="currentColor" fill="none"/>
+          </svg>
+        `;
 
-        // Assemble elements
-        label.appendChild(valueSpan);
-        label.appendChild(statusSpan);
+        // Details container
+        const details = document.createElement("div");
+        details.className = "ac-details";
+        details.hidden = true;
+        details.textContent = validation.message;
 
-        // Add additional attributes
-        label.setAttribute("data-details", validation.message);
-        label.className += validation.isValid ? " ac-valid" : " ac-invalid";
+        // Assemble indicator
+        indicator.appendChild(mainContent);
+        indicator.appendChild(toggleBtn);
+        indicator.appendChild(details);
+        indicator.className += validation.isValid ? " ac-valid" : " ac-invalid";
       } else {
-        label.textContent = messages.indicators.missing;
-        label.className += " ac-missing";
-        label.setAttribute("data-details", messages.status.missing);
+        // Main content for missing autocomplete
+        const mainContent = document.createElement("div");
+        mainContent.className = "ac-main-content";
+        mainContent.textContent = messages.indicators.missing;
+        // For missing autocomplete, also store validation data
+        indicator.dataset.validation = JSON.stringify({
+          isValid: false,
+          message: messages.status.missing,
+        });
+
+        // Details toggle button
+        const toggleBtn = document.createElement("button");
+        toggleBtn.className = "ac-details-toggle";
+        toggleBtn.setAttribute("aria-expanded", "false");
+        toggleBtn.innerHTML = `
+    <span class="visually-hidden">Show details</span>
+    <svg aria-hidden="true" width="12" height="12">
+      <path d="M2 4 L6 8 L10 4" stroke="currentColor" fill="none"/>
+    </svg>
+  `;
+
+        // Details container
+        const details = document.createElement("div");
+        details.className = "ac-details";
+        details.hidden = true;
+        details.textContent = messages.status.missing;
+
+        // Add event listener to toggle button
+        toggleBtn.addEventListener("click", () => {
+          const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
+          toggleBtn.setAttribute("aria-expanded", !isExpanded);
+          details.hidden = isExpanded;
+          toggleBtn.querySelector("svg").style.transform = isExpanded
+            ? "rotate(0deg)"
+            : "rotate(180deg)";
+        });
+
+        // Assemble indicator
+        indicator.appendChild(mainContent);
+        indicator.appendChild(toggleBtn);
+        indicator.appendChild(details);
+        indicator.className += " ac-missing";
       }
 
-      element.parentNode.insertBefore(label, element.nextSibling);
+      element.parentNode.insertBefore(indicator, element.nextSibling);
     });
   });
 
   // Export to CSV
   function exportToCSV() {
-    // CSV header with all columns including data-details
+    // CSV header with all columns
     const header = messages.csv.header + "\n";
 
     const csv =
@@ -1209,15 +1384,8 @@ javascript: (function () {
             ? messages.indicators.valid
             : messages.indicators.invalid;
 
-          // Find the associated indicator element to get data-details
-          const indicator = el.nextElementSibling;
-          const dataDetails =
-            indicator && indicator.classList.contains("ac-indicator")
-              ? (indicator.getAttribute("data-details") || "").replace(
-                  /,/g,
-                  ";"
-                )
-              : messages.csv.noDetails;
+          // Get validation details
+          const details = validation.message.replace(/,/g, ";");
 
           // Return array of values, joined by commas
           return [
@@ -1226,8 +1394,7 @@ javascript: (function () {
             el.type || messages.csv.noType, // Field type attribute
             autocomplete, // Autocomplete value
             status, // Validation status
-            validation.message.replace(/,/g, ";"), // Validation message (commas replaced)
-            dataDetails, // Data-details content
+            details, // Validation details (commas replaced with semicolons)
             el.value || messages.csv.empty, // Current field value
           ].join(",");
         })
@@ -1274,6 +1441,34 @@ javascript: (function () {
     let isIndicatorsVisible = true;
     let isDarkMode = false;
 
+    // Mode switching logic
+    const modeButtons = document.querySelectorAll(".ac-mode-btn");
+    modeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const mode = btn.dataset.mode;
+
+        // Update active state of buttons
+        modeButtons.forEach((b) => {
+          b.classList.toggle("active", b === btn);
+          b.setAttribute("aria-pressed", b === btn);
+        });
+
+        // Set mode on document body
+        document.body.setAttribute("data-ac-mode", mode);
+
+        // Update details content based on mode
+        document.querySelectorAll(".ac-details").forEach((detail) => {
+          const validation = detail.closest(".ac-indicator").dataset.validation;
+          if (validation) {
+            detail.textContent =
+              mode === "auditor"
+                ? getAuditorMessage(validation)
+                : getDeveloperMessage(validation);
+          }
+        });
+      });
+    });
+
     // Handle indicators toggle
     const toggleButton = document.getElementById("ac-toggle");
     if (toggleButton) {
@@ -1292,6 +1487,20 @@ javascript: (function () {
         });
       });
     }
+
+    // Handle details toggle buttons using event delegation
+    document.body.addEventListener("click", (e) => {
+      const toggleBtn = e.target.closest(".ac-details-toggle");
+      if (toggleBtn) {
+        const details = toggleBtn.nextElementSibling;
+        const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
+        toggleBtn.setAttribute("aria-expanded", !isExpanded);
+        details.hidden = isExpanded;
+        toggleBtn.querySelector("svg").style.transform = isExpanded
+          ? "rotate(0deg)"
+          : "rotate(180deg)";
+      }
+    });
 
     // Handle theme toggle
     const themeButton = document.getElementById("ac-theme");
