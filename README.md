@@ -2,6 +2,15 @@
 
 A simple tool for validating the `autocomplete` attributes of HTML form elements according to the HTML specification.
 
+## CI/CD Status
+
+### Workflows
+[![Lint and Minify workflow](https://github.com/MewenLeHo/detectAutocomplete/actions/workflows/lint-minify.yml/badge.svg)](https://github.com//MewenLeHo/detectAutocomplete/actions/workflows/lint-minify.yml)
+[![Release workflow](https://github.com//MewenLeHo/detectAutocomplete/actions/workflows/release.yml/badge.svg)](https://github.com//MewenLeHo/detectAutocomplete/actions/workflows/release.yml)
+
+### Latest Release
+[![Latest Release](https://img.shields.io/github/v/release//MewenLeHo/detectAutocomplete?label=latest&style=flat)](https://github.com//MewenLeHo/detectAutocomplete/releases/latest)
+
 ## Demo
 
 [Check out the demo](https://mewenleho.github.io/detectAutocomplete/)

@@ -1,10 +1,10 @@
-javascript: (function () {
+(function () {
   // Remove existing elements and styles from previous executions
   function cleanup() {
     document
-      .querySelectorAll(".ac-indicator, .ac-panel")
+      .querySelectorAll('.ac-indicator, .ac-panel')
       .forEach((el) => el.remove());
-    const existingStyle = document.querySelector("#ac-styles");
+    const existingStyle = document.querySelector('#ac-styles');
     if (existingStyle) existingStyle.remove();
   }
   cleanup();
@@ -14,7 +14,7 @@ javascript: (function () {
   const fragment = document.createDocumentFragment();
 
   // Get all form elements
-  const elements = document.querySelectorAll("input, select, textarea");
+  const elements = document.querySelectorAll('input, select, textarea');
 
   // Initialize results object
   const results = {
@@ -26,14 +26,14 @@ javascript: (function () {
   // Messages configuration
   const messages = {
     validation: {
-      empty: "Empty value",
+      empty: 'Empty value',
       controlChars:
-        "Invalid: autocomplete value cannot contain control characters",
+        'Invalid: autocomplete value cannot contain control characters',
       htmlChars:
-        "Invalid: autocomplete value cannot contain HTML special characters",
-      lineBreaks: "Invalid: autocomplete value cannot contain line breaks",
-      leadingSpace: "Invalid: leading or trailing spaces are not allowed",
-      startHyphen: "Invalid: autocomplete value cannot start with a hyphen",
+        'Invalid: autocomplete value cannot contain HTML special characters',
+      lineBreaks: 'Invalid: autocomplete value cannot contain line breaks',
+      leadingSpace: 'Invalid: leading or trailing spaces are not allowed',
+      startHyphen: 'Invalid: autocomplete value cannot start with a hyphen',
     },
     section: {
       spaceInPrefix:
@@ -41,29 +41,29 @@ javascript: (function () {
       doubleHyphen:
         'Invalid: section prefix must have exactly one hyphen (format must be "section-")',
       emptyValue:
-        "Invalid: section prefix must be followed by a value (section-billing, section-shipping, etc.)",
+        'Invalid: section prefix must be followed by a value (section-billing, section-shipping, etc.)',
       badPrefix: 'Invalid: section prefix must be exactly "section-"',
-      missingHyphen: "Invalid: section prefix must include a hyphen (section-)",
-      quotes: "Invalid: section name cannot contain quotes",
-      nonAscii: "Invalid: section name must contain only ASCII characters",
-      multipleSections: "Invalid: multiple section-* prefixes are not allowed",
+      missingHyphen: 'Invalid: section prefix must include a hyphen (section-)',
+      quotes: 'Invalid: section name cannot contain quotes',
+      nonAscii: 'Invalid: section name must contain only ASCII characters',
+      multipleSections: 'Invalid: multiple section-* prefixes are not allowed',
       wrongPlace:
-        "Invalid: section-* prefix must be at the start of the autocomplete attribute",
+        'Invalid: section-* prefix must be at the start of the autocomplete attribute',
       noSpaceAfterHyphen:
         'Invalid: "section-" must be immediately followed by a value (no spaces after the hyphen)',
     },
     status: {
-      missing: "Autocomplete attribute recommended",
+      missing: 'Autocomplete attribute recommended',
       notValidToken: (token) =>
         `Invalid: "${token}" is not a valid autocomplete token`,
-      onOffAlone: "'on' and 'off' must be used alone",
-      validValue: "Valid value",
+      onOffAlone: '\'on\' and \'off\' must be used alone',
+      validValue: 'Valid value',
       validCanonical: (value) =>
         `Valid value (canonical form: ${value.toLowerCase()})`,
-      validSection: "Valid section",
+      validSection: 'Valid section',
       validSectionCanonical: (value) =>
         `Valid section (canonical form: ${value.toLowerCase()})`,
-      validCombined: "Valid combined value",
+      validCombined: 'Valid combined value',
       validCombinedCanonical: (value) =>
         `Valid combined value (canonical form: ${value.toLowerCase()})`,
       extraWhitespace: (canonicalForm) =>
@@ -78,49 +78,49 @@ javascript: (function () {
         `Invalid: ${token} can only be combined with address or contact information`,
     },
     ui: {
-      panelTitle: "detectAutocomplete",
+      panelTitle: 'detectAutocomplete',
       total: (count) => `Total: ${count}`,
       valid: (count) => `Valid: ${count}`,
       invalid: (count) => `Invalid: ${count}`,
       missing: (count) => `Missing: ${count}`,
-      escapeHint: "Use <kbd>Esc</kbd> to close panel",
+      escapeHint: 'Use <kbd>Esc</kbd> to close panel',
       exportInfo:
-        "Export a CSV file containing the results of the accessibility analysis: a list of tested items, error types found, and suggested fixes.",
+        'Export a CSV file containing the results of the accessibility analysis: a list of tested items, error types found, and suggested fixes.',
     },
     buttons: {
-      hideDisplay: "Hide/Display",
-      close: "Close",
-      darkLight: "Dark/Light",
-      export: "Export to CSV",
+      hideDisplay: 'Hide/Display',
+      close: 'Close',
+      darkLight: 'Dark/Light',
+      export: 'Export to CSV',
       screenReaderLabels: {
-        indicators: " autocomplete indicators",
-        panel: " the panel and remove all indicators",
-        mode: " mode toggle",
-        results: " the autocomplete audit results",
+        indicators: ' autocomplete indicators',
+        panel: ' the panel and remove all indicators',
+        mode: ' mode toggle',
+        results: ' the autocomplete audit results',
       },
     },
     indicators: {
-      valid: "Valid",
-      invalid: "Invalid",
-      missing: "autocomplete missing",
-      combined: (parts) => `(Combined: ${parts.join(" + ")})`,
+      valid: 'Valid',
+      invalid: 'Invalid',
+      missing: 'autocomplete missing',
+      combined: (parts) => `(Combined: ${parts.join(' + ')})`,
       autocompletePrefix: (value) => `autocomplete="${value}"`,
     },
     csv: {
       header:
-        "Tag,Name,Type,Autocomplete,Status,Validation Message,Data Details,Value",
-      noName: "no-name",
-      noType: "no-type",
-      empty: "empty",
-      noDetails: "No details",
+        'Tag,Name,Type,Autocomplete,Status,Validation Message,Data Details,Value',
+      noName: 'no-name',
+      noType: 'no-type',
+      empty: 'empty',
+      noDetails: 'No details',
       filename: (date) =>
         `autocomplete-audit-${date.toISOString().slice(0, 10)}.csv`,
-      missingAttribute: "Missing autocomplete attribute",
+      missingAttribute: 'Missing autocomplete attribute',
     },
   };
 
   // Styles
-  const style = document.createElement("style");
+  const style = document.createElement('style');
   style.textContent = `
     .ac-panel {
       position: fixed;
@@ -276,433 +276,433 @@ javascript: (function () {
   const allowedValuesMap = new Map([
     // General purpose
     [
-      "on",
+      'on',
       {
-        category: "general",
-        description: "Enable autocomplete",
-        validation: "standalone",
+        category: 'general',
+        description: 'Enable autocomplete',
+        validation: 'standalone',
       },
     ],
     [
-      "off",
+      'off',
       {
-        category: "general",
-        description: "Disable autocomplete",
-        validation: "standalone",
+        category: 'general',
+        description: 'Disable autocomplete',
+        validation: 'standalone',
       },
     ],
 
     // Names
     [
-      "name",
-      { category: "names", description: "Full name", validation: "standard" },
+      'name',
+      { category: 'names', description: 'Full name', validation: 'standard' },
     ],
     [
-      "given-name",
-      { category: "names", description: "First name", validation: "standard" },
+      'given-name',
+      { category: 'names', description: 'First name', validation: 'standard' },
     ],
     [
-      "additional-name",
-      { category: "names", description: "Middle name", validation: "standard" },
+      'additional-name',
+      { category: 'names', description: 'Middle name', validation: 'standard' },
     ],
     [
-      "family-name",
-      { category: "names", description: "Last name", validation: "standard" },
+      'family-name',
+      { category: 'names', description: 'Last name', validation: 'standard' },
     ],
     [
-      "honorific-prefix",
+      'honorific-prefix',
       {
-        category: "names",
-        description: "Title prefix (Mr., Dr., etc.)",
-        validation: "standard",
+        category: 'names',
+        description: 'Title prefix (Mr., Dr., etc.)',
+        validation: 'standard',
       },
     ],
     [
-      "honorific-suffix",
+      'honorific-suffix',
       {
-        category: "names",
-        description: "Title suffix (Jr., PhD, etc.)",
-        validation: "standard",
+        category: 'names',
+        description: 'Title suffix (Jr., PhD, etc.)',
+        validation: 'standard',
       },
     ],
     [
-      "nickname",
-      { category: "names", description: "Nickname", validation: "standard" },
+      'nickname',
+      { category: 'names', description: 'Nickname', validation: 'standard' },
     ],
 
     // Contact info
     [
-      "email",
+      'email',
       {
-        category: "contact",
-        description: "Email address",
-        validation: "standard",
+        category: 'contact',
+        description: 'Email address',
+        validation: 'standard',
       },
     ],
     [
-      "tel",
+      'tel',
       {
-        category: "contact",
-        description: "Phone number",
-        validation: "standard",
+        category: 'contact',
+        description: 'Phone number',
+        validation: 'standard',
       },
     ],
     [
-      "url",
+      'url',
       {
-        category: "contact",
-        description: "Website URL",
-        validation: "standard",
+        category: 'contact',
+        description: 'Website URL',
+        validation: 'standard',
       },
     ],
     [
-      "impp",
+      'impp',
       {
-        category: "contact",
-        description: "Instant messaging URL",
-        validation: "standard",
+        category: 'contact',
+        description: 'Instant messaging URL',
+        validation: 'standard',
       },
     ],
 
     // Address
     [
-      "street-address",
+      'street-address',
       {
-        category: "address",
-        description: "Street address",
-        validation: "standard",
+        category: 'address',
+        description: 'Street address',
+        validation: 'standard',
       },
     ],
     [
-      "address-line1",
+      'address-line1',
       {
-        category: "address",
-        description: "Address line 1",
-        validation: "standard",
+        category: 'address',
+        description: 'Address line 1',
+        validation: 'standard',
       },
     ],
     [
-      "address-line2",
+      'address-line2',
       {
-        category: "address",
-        description: "Address line 2",
-        validation: "standard",
+        category: 'address',
+        description: 'Address line 2',
+        validation: 'standard',
       },
     ],
     [
-      "address-line3",
+      'address-line3',
       {
-        category: "address",
-        description: "Address line 3",
-        validation: "standard",
+        category: 'address',
+        description: 'Address line 3',
+        validation: 'standard',
       },
     ],
     [
-      "address-level1",
+      'address-level1',
       {
-        category: "address",
-        description: "State/Province",
-        validation: "standard",
+        category: 'address',
+        description: 'State/Province',
+        validation: 'standard',
       },
     ],
     [
-      "address-level2",
-      { category: "address", description: "City", validation: "standard" },
+      'address-level2',
+      { category: 'address', description: 'City', validation: 'standard' },
     ],
     [
-      "address-level3",
-      { category: "address", description: "District", validation: "standard" },
+      'address-level3',
+      { category: 'address', description: 'District', validation: 'standard' },
     ],
     [
-      "address-level4",
+      'address-level4',
       {
-        category: "address",
-        description: "Neighborhood",
-        validation: "standard",
+        category: 'address',
+        description: 'Neighborhood',
+        validation: 'standard',
       },
     ],
     [
-      "country",
+      'country',
       {
-        category: "address",
-        description: "Country code",
-        validation: "standard",
+        category: 'address',
+        description: 'Country code',
+        validation: 'standard',
       },
     ],
     [
-      "country-name",
+      'country-name',
       {
-        category: "address",
-        description: "Country name",
-        validation: "standard",
+        category: 'address',
+        description: 'Country name',
+        validation: 'standard',
       },
     ],
     [
-      "postal-code",
+      'postal-code',
       {
-        category: "address",
-        description: "Postal/ZIP code",
-        validation: "standard",
+        category: 'address',
+        description: 'Postal/ZIP code',
+        validation: 'standard',
       },
     ],
 
     // Payment
     [
-      "cc-name",
+      'cc-name',
       {
-        category: "payment",
-        description: "Full name on card",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'Full name on card',
+        validation: 'sensitive',
       },
     ],
     [
-      "cc-given-name",
+      'cc-given-name',
       {
-        category: "payment",
-        description: "First name on card",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'First name on card',
+        validation: 'sensitive',
       },
     ],
     [
-      "cc-additional-name",
+      'cc-additional-name',
       {
-        category: "payment",
-        description: "Middle name on card",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'Middle name on card',
+        validation: 'sensitive',
       },
     ],
     [
-      "cc-family-name",
+      'cc-family-name',
       {
-        category: "payment",
-        description: "Last name on card",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'Last name on card',
+        validation: 'sensitive',
       },
     ],
     [
-      "cc-number",
+      'cc-number',
       {
-        category: "payment",
-        description: "Card number",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'Card number',
+        validation: 'sensitive',
       },
     ],
     [
-      "cc-exp",
+      'cc-exp',
       {
-        category: "payment",
-        description: "Expiration date",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'Expiration date',
+        validation: 'sensitive',
       },
     ],
     [
-      "cc-exp-month",
+      'cc-exp-month',
       {
-        category: "payment",
-        description: "Expiration month",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'Expiration month',
+        validation: 'sensitive',
       },
     ],
     [
-      "cc-exp-year",
+      'cc-exp-year',
       {
-        category: "payment",
-        description: "Expiration year",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'Expiration year',
+        validation: 'sensitive',
       },
     ],
     [
-      "cc-csc",
+      'cc-csc',
       {
-        category: "payment",
-        description: "Security code",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'Security code',
+        validation: 'sensitive',
       },
     ],
     [
-      "cc-type",
+      'cc-type',
       {
-        category: "payment",
-        description: "Card type",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'Card type',
+        validation: 'sensitive',
       },
     ],
     [
-      "transaction-currency",
+      'transaction-currency',
       {
-        category: "payment",
-        description: "Transaction currency",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'Transaction currency',
+        validation: 'sensitive',
       },
     ],
     [
-      "transaction-amount",
+      'transaction-amount',
       {
-        category: "payment",
-        description: "Transaction amount",
-        validation: "sensitive",
+        category: 'payment',
+        description: 'Transaction amount',
+        validation: 'sensitive',
       },
     ],
 
     // Personal
     [
-      "bday",
+      'bday',
       {
-        category: "personal",
-        description: "Full birthday",
-        validation: "standard",
+        category: 'personal',
+        description: 'Full birthday',
+        validation: 'standard',
       },
     ],
     [
-      "bday-day",
+      'bday-day',
       {
-        category: "personal",
-        description: "Birthday day",
-        validation: "standard",
+        category: 'personal',
+        description: 'Birthday day',
+        validation: 'standard',
       },
     ],
     [
-      "bday-month",
+      'bday-month',
       {
-        category: "personal",
-        description: "Birthday month",
-        validation: "standard",
+        category: 'personal',
+        description: 'Birthday month',
+        validation: 'standard',
       },
     ],
     [
-      "bday-year",
+      'bday-year',
       {
-        category: "personal",
-        description: "Birthday year",
-        validation: "standard",
+        category: 'personal',
+        description: 'Birthday year',
+        validation: 'standard',
       },
     ],
     [
-      "sex",
+      'sex',
       {
-        category: "personal",
-        description: "Biological sex",
-        validation: "standard",
+        category: 'personal',
+        description: 'Biological sex',
+        validation: 'standard',
       },
     ],
     [
-      "organization",
+      'organization',
       {
-        category: "personal",
-        description: "Company name",
-        validation: "standard",
+        category: 'personal',
+        description: 'Company name',
+        validation: 'standard',
       },
     ],
     [
-      "organization-title",
+      'organization-title',
       {
-        category: "personal",
-        description: "Job title",
-        validation: "standard",
+        category: 'personal',
+        description: 'Job title',
+        validation: 'standard',
       },
     ],
     [
-      "language",
+      'language',
       {
-        category: "personal",
-        description: "Preferred language",
-        validation: "standard",
+        category: 'personal',
+        description: 'Preferred language',
+        validation: 'standard',
       },
     ],
     [
-      "photo",
+      'photo',
       {
-        category: "personal",
-        description: "Photo URL",
-        validation: "standard",
+        category: 'personal',
+        description: 'Photo URL',
+        validation: 'standard',
       },
     ],
 
     // Credentials
     [
-      "username",
+      'username',
       {
-        category: "credentials",
-        description: "Username",
-        validation: "sensitive",
+        category: 'credentials',
+        description: 'Username',
+        validation: 'sensitive',
       },
     ],
     [
-      "new-password",
+      'new-password',
       {
-        category: "credentials",
-        description: "New password",
-        validation: "sensitive",
+        category: 'credentials',
+        description: 'New password',
+        validation: 'sensitive',
       },
     ],
     [
-      "current-password",
+      'current-password',
       {
-        category: "credentials",
-        description: "Current password",
-        validation: "sensitive",
+        category: 'credentials',
+        description: 'Current password',
+        validation: 'sensitive',
       },
     ],
     [
-      "one-time-code",
+      'one-time-code',
       {
-        category: "credentials",
-        description: "One-time code",
-        validation: "sensitive",
+        category: 'credentials',
+        description: 'One-time code',
+        validation: 'sensitive',
       },
     ],
 
     // Phone details
     [
-      "tel-country-code",
+      'tel-country-code',
       {
-        category: "phone",
-        description: "Country code",
-        validation: "standard",
+        category: 'phone',
+        description: 'Country code',
+        validation: 'standard',
       },
     ],
     [
-      "tel-national",
+      'tel-national',
       {
-        category: "phone",
-        description: "National number",
-        validation: "standard",
+        category: 'phone',
+        description: 'National number',
+        validation: 'standard',
       },
     ],
     [
-      "tel-area-code",
-      { category: "phone", description: "Area code", validation: "standard" },
+      'tel-area-code',
+      { category: 'phone', description: 'Area code', validation: 'standard' },
     ],
     [
-      "tel-local",
+      'tel-local',
       {
-        category: "phone",
-        description: "Local number",
-        validation: "standard",
+        category: 'phone',
+        description: 'Local number',
+        validation: 'standard',
       },
     ],
     [
-      "tel-local-prefix",
+      'tel-local-prefix',
       {
-        category: "phone",
-        description: "First part of local number",
-        validation: "standard",
+        category: 'phone',
+        description: 'First part of local number',
+        validation: 'standard',
       },
     ],
     [
-      "tel-local-suffix",
+      'tel-local-suffix',
       {
-        category: "phone",
-        description: "Last part of local number",
-        validation: "standard",
+        category: 'phone',
+        description: 'Last part of local number',
+        validation: 'standard',
       },
     ],
     [
-      "tel-extension",
+      'tel-extension',
       {
-        category: "phone",
-        description: "Extension number",
-        validation: "standard",
+        category: 'phone',
+        description: 'Extension number',
+        validation: 'standard',
       },
     ],
   ]);
@@ -710,151 +710,151 @@ javascript: (function () {
   // Define Map for sections
   const allowedSectionsMap = new Map([
     [
-      "shipping",
+      'shipping',
       {
-        type: "address-contact-only",
-        description: "Shipping address or contact information only",
+        type: 'address-contact-only',
+        description: 'Shipping address or contact information only',
         validFields: new Set([
-          "name",
-          "given-name",
-          "additional-name",
-          "family-name",
-          "honorific-prefix",
-          "honorific-suffix",
-          "street-address",
-          "address-line1",
-          "address-line2",
-          "address-line3",
-          "address-level1",
-          "address-level2",
-          "address-level3",
-          "address-level4",
-          "country",
-          "country-name",
-          "postal-code",
-          "tel",
-          "tel-country-code",
-          "tel-national",
-          "tel-area-code",
-          "tel-local",
-          "tel-local-prefix",
-          "tel-local-suffix",
-          "tel-extension",
-          "email",
+          'name',
+          'given-name',
+          'additional-name',
+          'family-name',
+          'honorific-prefix',
+          'honorific-suffix',
+          'street-address',
+          'address-line1',
+          'address-line2',
+          'address-line3',
+          'address-level1',
+          'address-level2',
+          'address-level3',
+          'address-level4',
+          'country',
+          'country-name',
+          'postal-code',
+          'tel',
+          'tel-country-code',
+          'tel-national',
+          'tel-area-code',
+          'tel-local',
+          'tel-local-prefix',
+          'tel-local-suffix',
+          'tel-extension',
+          'email',
         ]),
       },
     ],
     [
-      "billing",
+      'billing',
       {
-        type: "address-contact-only",
-        description: "Billing address or contact information only",
+        type: 'address-contact-only',
+        description: 'Billing address or contact information only',
         validFields: new Set([
-          "name",
-          "given-name",
-          "additional-name",
-          "family-name",
-          "honorific-prefix",
-          "honorific-suffix",
-          "street-address",
-          "address-line1",
-          "address-line2",
-          "address-line3",
-          "address-level1",
-          "address-level2",
-          "address-level3",
-          "address-level4",
-          "country",
-          "country-name",
-          "postal-code",
-          "tel",
-          "tel-country-code",
-          "tel-national",
-          "tel-area-code",
-          "tel-local",
-          "tel-local-prefix",
-          "tel-local-suffix",
-          "tel-extension",
-          "email",
+          'name',
+          'given-name',
+          'additional-name',
+          'family-name',
+          'honorific-prefix',
+          'honorific-suffix',
+          'street-address',
+          'address-line1',
+          'address-line2',
+          'address-line3',
+          'address-level1',
+          'address-level2',
+          'address-level3',
+          'address-level4',
+          'country',
+          'country-name',
+          'postal-code',
+          'tel',
+          'tel-country-code',
+          'tel-national',
+          'tel-area-code',
+          'tel-local',
+          'tel-local-prefix',
+          'tel-local-suffix',
+          'tel-extension',
+          'email',
         ]),
       },
     ],
     [
-      "home",
+      'home',
       {
         validFields: new Set([
-          "tel",
-          "tel-country-code",
-          "tel-national",
-          "tel-area-code",
-          "tel-local",
-          "tel-local-prefix",
-          "tel-local-suffix",
-          "tel-extension",
-          "email",
-          "impp",
+          'tel',
+          'tel-country-code',
+          'tel-national',
+          'tel-area-code',
+          'tel-local',
+          'tel-local-prefix',
+          'tel-local-suffix',
+          'tel-extension',
+          'email',
+          'impp',
         ]),
       },
     ],
     [
-      "work",
+      'work',
       {
         validFields: new Set([
-          "tel",
-          "tel-country-code",
-          "tel-national",
-          "tel-area-code",
-          "tel-local",
-          "tel-local-prefix",
-          "tel-local-suffix",
-          "tel-extension",
-          "email",
-          "impp",
+          'tel',
+          'tel-country-code',
+          'tel-national',
+          'tel-area-code',
+          'tel-local',
+          'tel-local-prefix',
+          'tel-local-suffix',
+          'tel-extension',
+          'email',
+          'impp',
         ]),
       },
     ],
     [
-      "mobile",
+      'mobile',
       {
         validFields: new Set([
-          "tel",
-          "tel-country-code",
-          "tel-national",
-          "tel-area-code",
-          "tel-local",
-          "tel-local-prefix",
-          "tel-local-suffix",
-          "tel-extension",
+          'tel',
+          'tel-country-code',
+          'tel-national',
+          'tel-area-code',
+          'tel-local',
+          'tel-local-prefix',
+          'tel-local-suffix',
+          'tel-extension',
         ]),
       },
     ],
     [
-      "fax",
+      'fax',
       {
         validFields: new Set([
-          "tel",
-          "tel-country-code",
-          "tel-national",
-          "tel-area-code",
-          "tel-local",
-          "tel-local-prefix",
-          "tel-local-suffix",
-          "tel-extension",
+          'tel',
+          'tel-country-code',
+          'tel-national',
+          'tel-area-code',
+          'tel-local',
+          'tel-local-prefix',
+          'tel-local-suffix',
+          'tel-extension',
         ]),
       },
     ],
     [
-      "pager",
+      'pager',
       {
         validFields: new Set([
-          "tel",
-          "tel-country-code",
-          "tel-national",
-          "tel-area-code",
-          "tel-local",
-          "tel-local-prefix",
-          "tel-local-suffix",
-          "tel-extension",
+          'tel',
+          'tel-country-code',
+          'tel-national',
+          'tel-area-code',
+          'tel-local',
+          'tel-local-prefix',
+          'tel-local-suffix',
+          'tel-extension',
         ]),
       },
     ],
@@ -862,7 +862,8 @@ javascript: (function () {
 
   // Check for non-ASCII characters in string (returns true if found)
   function containsNonASCII(str) {
-    return /[^\x00-\x7F]/.test(str);
+    // eslint-disable-next-line no-control-regex
+    return /[^\x00-\x7F]/.test(str); // Check for non-ASCII characters (needed for validation)
   }
 
   // Check for any tabs or multiple spaces within the string
@@ -900,16 +901,16 @@ javascript: (function () {
     }
 
     // 2. Check section position (must be at start if present)
-    if (rawValue.includes("section-") && !rawValue.startsWith("section-")) {
+    if (rawValue.includes('section-') && !rawValue.startsWith('section-')) {
       return {
         isValid: false,
         message: messages.section.wrongPlace,
-        suggestion: `section-${value.replace(/section-/i, "").trim()}`,
+        suggestion: `section-${value.replace(/section-/i, '').trim()}`,
       };
     }
 
     // 3. Check for multiple section prefixes
-    const sectionPrefixes = parts.filter((part) => part.startsWith("section-"));
+    const sectionPrefixes = parts.filter((part) => part.startsWith('section-'));
     if (sectionPrefixes.length > 1) {
       return {
         isValid: false,
@@ -920,9 +921,9 @@ javascript: (function () {
     // 4. Check for malformed section prefix
     const invalidVariant = parts.find(
       (part) =>
-        (part.startsWith("section") &&
-          part.includes("-") &&
-          !part.startsWith("section-")) ||
+        (part.startsWith('section') &&
+          part.includes('-') &&
+          !part.startsWith('section-')) ||
         part.match(/section[a-z]+-/)
     );
 
@@ -930,12 +931,12 @@ javascript: (function () {
       return {
         isValid: false,
         message: messages.section.badPrefix,
-        suggestion: value.replace(/section[a-z]*-?/, "section-"),
+        suggestion: value.replace(/section[a-z]*-?/, 'section-'),
       };
     }
 
     // 5. Check section content validity
-    if (parts[0].includes('"') || parts[0].includes("'")) {
+    if (parts[0].includes('"') || parts[0].includes('\'')) {
       return {
         isValid: false,
         message: messages.section.quotes,
@@ -975,7 +976,8 @@ javascript: (function () {
     const formatErrors = [
       { test: !value, message: messages.validation.empty },
       {
-        test: /[\x00-\x1F\x7F]/.test(value),
+        // eslint-disable-next-line no-control-regex
+        test: /[\x00-\x1F\x7F]/.test(value), // Check for control characters in string (needed for validation)
         message: messages.validation.controlChars,
       },
       {
@@ -987,7 +989,7 @@ javascript: (function () {
         test: value.trim() !== value,
         message: messages.validation.leadingSpace,
       },
-      { test: value.startsWith("-"), message: messages.validation.startHyphen },
+      { test: value.startsWith('-'), message: messages.validation.startHyphen },
     ];
 
     const error = formatErrors.find((error) => error.test);
@@ -1012,27 +1014,27 @@ javascript: (function () {
     const firstToken = parts[0];
 
     // Special cases: on/off
-    if (["on", "off"].includes(firstToken)) {
+    if (['on', 'off'].includes(firstToken)) {
       return {
         isValid: parts.length === 1,
         message:
           parts.length > 1
             ? messages.status.onOffAlone
             : hasNonCanonicalCase
-            ? messages.status.validCanonical(value)
-            : messages.status.validValue,
+              ? messages.status.validCanonical(value)
+              : messages.status.validValue,
       };
     }
 
     // Section validation
-    if (value.includes("section")) {
+    if (value.includes('section')) {
       const sectionValidation = validateSectionPrefix(value);
       if (!sectionValidation.isValid) {
         return sectionValidation;
       }
 
       // Additional section validation for valid prefixes
-      if (parts[0].startsWith("section-")) {
+      if (parts[0].startsWith('section-')) {
         const lastToken = parts[parts.length - 1];
         const lastTokenValidation = validateStandardToken(
           lastToken,
@@ -1045,12 +1047,12 @@ javascript: (function () {
             parts.length < 2
               ? messages.status.mustFollowField(parts[0])
               : !lastTokenValidation.isValid
-              ? messages.status.invalidFieldName(lastToken)
-              : sectionValidation.hasExtraWhitespace
-              ? messages.status.extraWhitespace(parts.join(" "))
-              : hasNonCanonicalCase
-              ? messages.status.validSectionCanonical(value)
-              : messages.status.validSection,
+                ? messages.status.invalidFieldName(lastToken)
+                : sectionValidation.hasExtraWhitespace
+                  ? messages.status.extraWhitespace(parts.join(' '))
+                  : hasNonCanonicalCase
+                    ? messages.status.validSectionCanonical(value)
+                    : messages.status.validSection,
         };
       }
     }
@@ -1068,10 +1070,10 @@ javascript: (function () {
           parts.length < 2
             ? messages.status.sectionNeedsField(firstToken)
             : isValidSection
-            ? hasNonCanonicalCase
-              ? messages.status.validCombinedCanonical(value)
-              : messages.status.validCombined
-            : messages.status.addressOnly(firstToken),
+              ? hasNonCanonicalCase
+                ? messages.status.validCombinedCanonical(value)
+                : messages.status.validCombined
+              : messages.status.addressOnly(firstToken),
       };
     }
 
@@ -1081,8 +1083,8 @@ javascript: (function () {
 
   // Analyze form elements
   elements.forEach(function (element) {
-    if (element.hasAttribute("autocomplete")) {
-      const value = element.getAttribute("autocomplete");
+    if (element.hasAttribute('autocomplete')) {
+      const value = element.getAttribute('autocomplete');
       const validation = validateAutocomplete(value);
       validation.isValid
         ? results.valid.push(element)
@@ -1093,11 +1095,11 @@ javascript: (function () {
   });
 
   // Display results panel
-  const panel = document.createElement("div");
-  panel.className = "ac-panel";
-  panel.setAttribute("role", "dialog");
-  panel.setAttribute("aria-modal", "true");
-  panel.setAttribute("aria-labelledby", "ac-panel-title");
+  const panel = document.createElement('div');
+  panel.className = 'ac-panel';
+  panel.setAttribute('role', 'dialog');
+  panel.setAttribute('aria-modal', 'true');
+  panel.setAttribute('aria-labelledby', 'ac-panel-title');
   panel.innerHTML = `
   <p id="ac-panel-title">${messages.ui.panelTitle}</p>
   <div class="ac-stats">
@@ -1110,26 +1112,26 @@ javascript: (function () {
     <button class="ac-btn" id="ac-toggle">
       ${messages.buttons.hideDisplay}
       <span class="visually-hidden">${
-        messages.buttons.screenReaderLabels.indicators
-      }</span>
+  messages.buttons.screenReaderLabels.indicators
+  }</span>
     </button>
     <button class="ac-btn" id="ac-cleanup">
       ${messages.buttons.close}
       <span class="visually-hidden">${
-        messages.buttons.screenReaderLabels.panel
-      }</span>
+  messages.buttons.screenReaderLabels.panel
+  }</span>
     </button>
     <button class="ac-btn" id="ac-theme">
       ${messages.buttons.darkLight}
       <span class="visually-hidden">${
-        messages.buttons.screenReaderLabels.mode
-      }</span>
+  messages.buttons.screenReaderLabels.mode
+  }</span>
     </button>
     <button class="ac-btn" id="ac-export" aria-describedby="exportInfo">
       ${messages.buttons.export}
       <span class="visually-hidden">${
-        messages.buttons.screenReaderLabels.results
-      }</span>
+  messages.buttons.screenReaderLabels.results
+  }</span>
     </button>
   </div>
   <p id="exportInfo" class="visually-hidden">
@@ -1144,22 +1146,22 @@ javascript: (function () {
   // Add visual indicators
   requestAnimationFrame(() => {
     elements.forEach(function (element) {
-      const label = document.createElement("p");
-      label.className = "ac-indicator";
+      const label = document.createElement('p');
+      label.className = 'ac-indicator';
 
-      if (element.hasAttribute("autocomplete")) {
-        const value = element.getAttribute("autocomplete");
+      if (element.hasAttribute('autocomplete')) {
+        const value = element.getAttribute('autocomplete');
         const validation = validateAutocomplete(value);
-        const parts = value.toLowerCase().split(" ").filter(Boolean);
+        const parts = value.toLowerCase().split(' ').filter(Boolean);
 
         // Create separate elements for better control
-        const valueSpan = document.createElement("span");
+        const valueSpan = document.createElement('span');
         valueSpan.textContent = messages.indicators.autocompletePrefix(value);
 
-        const statusSpan = document.createElement("span");
+        const statusSpan = document.createElement('span');
         statusSpan.setAttribute(
-          "role",
-          validation.isValid ? "status" : "alert"
+          'role',
+          validation.isValid ? 'status' : 'alert'
         );
         statusSpan.textContent = validation.isValid
           ? ` ${messages.indicators.valid}`
@@ -1174,12 +1176,12 @@ javascript: (function () {
         label.appendChild(statusSpan);
 
         // Add additional attributes
-        label.setAttribute("data-details", validation.message);
-        label.className += validation.isValid ? " ac-valid" : " ac-invalid";
+        label.setAttribute('data-details', validation.message);
+        label.className += validation.isValid ? ' ac-valid' : ' ac-invalid';
       } else {
         label.textContent = messages.indicators.missing;
-        label.className += " ac-missing";
-        label.setAttribute("data-details", messages.status.missing);
+        label.className += ' ac-missing';
+        label.setAttribute('data-details', messages.status.missing);
       }
 
       element.parentNode.insertBefore(label, element.nextSibling);
@@ -1189,18 +1191,18 @@ javascript: (function () {
   // Export to CSV
   function exportToCSV() {
     // CSV header with all columns including data-details
-    const header = messages.csv.header + "\n";
+    const header = messages.csv.header + '\n';
 
     const csv =
       header +
       Array.from(elements)
         .map((el) => {
           // Get autocomplete attribute or mark as missing
-          const autocomplete = el.getAttribute("autocomplete") || "missing";
+          const autocomplete = el.getAttribute('autocomplete') || 'missing';
 
           // Validate autocomplete value if present
           const validation =
-            autocomplete !== "missing"
+            autocomplete !== 'missing'
               ? validateAutocomplete(autocomplete)
               : { isValid: false, message: messages.csv.missingAttribute };
 
@@ -1212,11 +1214,11 @@ javascript: (function () {
           // Find the associated indicator element to get data-details
           const indicator = el.nextElementSibling;
           const dataDetails =
-            indicator && indicator.classList.contains("ac-indicator")
-              ? (indicator.getAttribute("data-details") || "").replace(
-                  /,/g,
-                  ";"
-                )
+            indicator && indicator.classList.contains('ac-indicator')
+              ? (indicator.getAttribute('data-details') || '').replace(
+                /,/g,
+                ';'
+              )
               : messages.csv.noDetails;
 
           // Return array of values, joined by commas
@@ -1226,20 +1228,20 @@ javascript: (function () {
             el.type || messages.csv.noType, // Field type attribute
             autocomplete, // Autocomplete value
             status, // Validation status
-            validation.message.replace(/,/g, ";"), // Validation message (commas replaced)
+            validation.message.replace(/,/g, ';'), // Validation message (commas replaced)
             dataDetails, // Data-details content
             el.value || messages.csv.empty, // Current field value
-          ].join(",");
+          ].join(',');
         })
-        .join("\n");
+        .join('\n');
 
     // Add BOM for UTF-8 encoding
-    const bom = "\uFEFF";
+    const bom = '\uFEFF';
 
     // Create and trigger download
-    const blob = new Blob([bom + csv], { type: "text/csv;charset=utf-8" });
+    const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = messages.csv.filename(new Date());
     a.click();
@@ -1251,18 +1253,18 @@ javascript: (function () {
   // Add complete fragment to DOM
   requestAnimationFrame(() => {
     document.body.insertBefore(fragment, document.body.firstChild);
-    const panel = document.querySelector(".ac-panel");
+    const panel = document.querySelector('.ac-panel');
 
     // Focus
     if (panel) {
-      const firstButton = panel.querySelector("button");
+      const firstButton = panel.querySelector('button');
       if (firstButton) {
         firstButton.focus();
       }
 
       // Escape shortcut
-      panel.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
+      panel.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
           cleanup();
           document.activeElement?.blur();
         }
@@ -1275,48 +1277,48 @@ javascript: (function () {
     let isDarkMode = false;
 
     // Handle indicators toggle
-    const toggleButton = document.getElementById("ac-toggle");
+    const toggleButton = document.getElementById('ac-toggle');
     if (toggleButton) {
-      toggleButton.setAttribute("aria-pressed", "true"); // Initial state
-      toggleButton.addEventListener("click", () => {
+      toggleButton.setAttribute('aria-pressed', 'true'); // Initial state
+      toggleButton.addEventListener('click', () => {
         isIndicatorsVisible = !isIndicatorsVisible;
         toggleButton.setAttribute(
-          "aria-pressed",
-          isIndicatorsVisible ? "true" : "false"
+          'aria-pressed',
+          isIndicatorsVisible ? 'true' : 'false'
         );
 
         requestAnimationFrame(() => {
           document
-            .querySelectorAll(".ac-indicator")
-            .forEach((el) => el.classList.toggle("ac-hidden"));
+            .querySelectorAll('.ac-indicator')
+            .forEach((el) => el.classList.toggle('ac-hidden'));
         });
       });
     }
 
     // Handle theme toggle
-    const themeButton = document.getElementById("ac-theme");
+    const themeButton = document.getElementById('ac-theme');
     if (themeButton) {
-      themeButton.setAttribute("aria-pressed", "false"); // Initial state
-      themeButton.addEventListener("click", () => {
+      themeButton.setAttribute('aria-pressed', 'false'); // Initial state
+      themeButton.addEventListener('click', () => {
         isDarkMode = !isDarkMode;
-        themeButton.setAttribute("aria-pressed", isDarkMode ? "true" : "false");
+        themeButton.setAttribute('aria-pressed', isDarkMode ? 'true' : 'false');
 
         requestAnimationFrame(() => {
-          document.body.classList.toggle("ac-dark");
+          document.body.classList.toggle('ac-dark');
         });
       });
     }
 
     // Handle export button
-    const exportButton = document.getElementById("ac-export");
+    const exportButton = document.getElementById('ac-export');
     if (exportButton) {
-      exportButton.addEventListener("click", exportToCSV);
+      exportButton.addEventListener('click', exportToCSV);
     }
 
     // Handle cleanup button
-    const cleanupButton = document.getElementById("ac-cleanup");
+    const cleanupButton = document.getElementById('ac-cleanup');
     if (cleanupButton) {
-      cleanupButton.addEventListener("click", cleanup);
+      cleanupButton.addEventListener('click', cleanup);
     }
   });
 })();
