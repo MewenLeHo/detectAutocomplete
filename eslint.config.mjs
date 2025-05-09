@@ -21,6 +21,7 @@ export default defineConfig([
       semi: ["error", "always"],
       quotes: ["error", "single"],
       indent: ["error", 2],
+      "no-unused-labels": "off",
     },
     ignores: [
       ".github/**",
