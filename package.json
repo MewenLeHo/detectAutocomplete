@@ -1,0 +1,30 @@
+{
+  "name": "detectautocomplete",
+  "version": "1.0.0",
+  "description": "A simple tool for validating the `autocomplete` attributes of HTML form elements according to the HTML specification.",
+  "main": "detectAutocomplete.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MewenLeHo/detectAutocomplete.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MewenLeHo/detectAutocomplete/issues"
+  },
+  "homepage": "https://github.com/MewenLeHo/detectAutocomplete#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "eslint": "^9.26.0",
+    "globals": "^16.1.0"
+  }
+}

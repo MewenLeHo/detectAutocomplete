@@ -1,0 +1,23 @@
+name: Create Release
+
+# Trigger the workflow only when a tag starting with "v" is pushed
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository code at the tagged commit
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Create a GitHub release and attach the minified file
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: detectAutocomplete.min.js
