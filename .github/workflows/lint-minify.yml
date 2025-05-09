@@ -72,3 +72,4 @@ jobs:
           else
             git commit -m "Minify JavaScript file [auto]"
             git push
+          fi
