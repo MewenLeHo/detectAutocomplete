@@ -58,8 +58,10 @@ jobs:
 
       # Step 4: Minify the JavaScript source file
       - name: Minify JavaScript
+        # For now, keep the minification safe for bookmarklets.
+        # You can add --compress --mangle in the future if needed.
         run: |
-          npx terser detectAutocomplete.js --compress --mangle -o detectAutocomplete.min.js
+          npx terser detectAutocomplete.js -o detectAutocomplete.min.js
 
       # Step 5: Commit the minified file if there are changes
       - name: Commit minified file if changed
