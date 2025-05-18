@@ -281,7 +281,7 @@ We are committed to maintaining a welcoming and respectful community. Please rea
 
 ## Version Information
 
-**Current Version**: 1.2.1
+**Current Version**: 1.3.1
 
 **Core Features**:
 - Full syntax validation
