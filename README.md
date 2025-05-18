@@ -2,11 +2,13 @@
 
 A simple tool for validating the `autocomplete` attributes of HTML form elements according to the HTML specification.
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 ## CI/CD Status
 
 ### Workflows
-[![Lint and Minify workflow](https://github.com/MewenLeHo/detectAutocomplete/actions/workflows/lint-minify.yml/badge.svg)](https://github.com//MewenLeHo/detectAutocomplete/actions/workflows/lint-minify.yml)
-[![Release workflow](https://github.com//MewenLeHo/detectAutocomplete/actions/workflows/release.yml/badge.svg)](https://github.com//MewenLeHo/detectAutocomplete/actions/workflows/release.yml)
+[![Lint and Minify workflow](https://github.com/MewenLeHo/detectAutocomplete/actions/workflows/lint-minify.yml/badge.svg)](https://github.com/MewenLeHo/detectAutocomplete/actions/workflows/lint-minify.yml)
+[![Release workflow](https://github.com//MewenLeHo/detectAutocomplete/actions/workflows/release.yml/badge.svg)](https://github.com/MewenLeHo/detectAutocomplete/actions/workflows/release.yml)
 
 ### Latest Release
 [![Latest Release](https://img.shields.io/github/v/release/MewenLeHo/detectAutocomplete?label=latest&style=flat)](https://github.com/MewenLeHo/detectAutocomplete/releases/latest)
@@ -316,7 +318,7 @@ Feel free to contribute by submitting issues or pull requests to enhance the too
 
 ## Version Information
 
-**Current Version**: 1.2.0
+**Current Version**: 1.2.1
 
 **Core Features**:
 - Full syntax validation
@@ -354,3 +356,8 @@ Feel free to contribute by submitting issues or pull requests to enhance the too
 - [HTML Specification](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute)
 - [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose.html)
 - [MDN Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete)
+
+## License
+
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
