@@ -2,13 +2,13 @@
 
 A simple tool for validating the `autocomplete` attributes of HTML form elements according to the HTML specification.
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 ## CI/CD Status
 
 ### Workflows
 [![Lint and Minify workflow](https://github.com/MewenLeHo/detectAutocomplete/actions/workflows/lint-minify.yml/badge.svg)](https://github.com/MewenLeHo/detectAutocomplete/actions/workflows/lint-minify.yml)
-[![Release workflow](https://github.com//MewenLeHo/detectAutocomplete/actions/workflows/release.yml/badge.svg)](https://github.com/MewenLeHo/detectAutocomplete/actions/workflows/release.yml)
+[![Release workflow](https://github.com/MewenLeHo/detectAutocomplete/actions/workflows/release.yml/badge.svg)](https://github.com/MewenLeHo/detectAutocomplete/actions/workflows/release.yml)
 
 ### Latest Release
 [![Latest Release](https://img.shields.io/github/v/release/MewenLeHo/detectAutocomplete?label=latest&style=flat)](https://github.com/MewenLeHo/detectAutocomplete/releases/latest)
@@ -265,50 +265,13 @@ A simple tool for validating the `autocomplete` attributes of HTML form elements
 
 ## Contributing
 
-Feel free to contribute by submitting issues or pull requests to enhance the tool's functionality or improve documentation. Your feedback is welcome!
+For contributing guidelines, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
-**Development Process**:
-- Fork repository
-- Create feature branch
-- Modify the main `detectAutocomplete.js` file
-- Follow coding standards
-- Add/update tests
-- Submit pull request
+## Code of Conduct
 
-**Testing Requirements**:
-- Unit tests
-- Cross-browser testing
-- Accessibility testing
-- Performance testing
-
-**Documentation**:
-- Code comments
-- README updates
-- Usage examples
-- API documentation
-
-**Quality Standards**:
-- Code style compliance
-- Test coverage
-- Performance benchmarks
-- Accessibility compliance
-
-**Note**: Work with unminified version only. Minified version is auto-generated.
+We are committed to maintaining a welcoming and respectful community. Please read our [Code of Conduct](CODE_OF_CONDUCT.md) for more details.
 
 ## Support & Community
-
-**Getting Help**:
-- [GitHub Issues](https://github.com/MewenLeHo/detectAutocomplete/issues)
-- Documentation
-- Community discussions
-- Bug reporting guide
-
-**Contributing Opportunities**:
-- Code contributions
-- Documentation improvements
-- Translations
-- Bug reports
-- Feature requests
 
 **Stay Updated**:
 - Release notifications
@@ -359,5 +322,5 @@ Feel free to contribute by submitting issues or pull requests to enhance the too
 
 ## License
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)  
+This project is licensed under the MIT License. See the LICENSE file for more details.
