@@ -43,7 +43,7 @@ This roadmap outlines the planned features and improvements for `detectAutocompl
 - **Performance optimizations**: Reducing the time complexity for large forms, optimizing DOM operations.
 - **Internationalization (i18n)**: Added i18n support for better localization of validation feedback.
 
-## 🛠 Technical Roadmap
+## Technical Roadmap
 
 - **Result caching**: Store previous validation results for faster revalidation.
 - **Enhanced DOM handling**: Efficient traversal and manipulation of form elements to improve performance.
