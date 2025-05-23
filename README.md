@@ -245,23 +245,7 @@ A simple tool for validating the `autocomplete` attributes of HTML form elements
 
 ## Future Development
 
-**Planned Features**:
-- Advanced token validation
-- Enhanced section rules
-- Custom validation patterns
-- Performance optimizations
-
-**Technical Roadmap**:
-- Result caching
-- Enhanced DOM handling
-- Extended API support
-- Automated testing
-
-**Accessibility Improvements**:
-- Enhanced screen reader support
-- Keyboard navigation
-- High contrast modes
-- ARIA enhancements
+For next steps, please refer to the [ROADMAP.md](ROADMAP.md) file.
 
 ## Contributing
 
