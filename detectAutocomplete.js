@@ -127,6 +127,7 @@ javascript: (function () {
       top: 10px;
       left: 10px;
       background: #fff;
+      color: #000;
       padding: 15px;
       border-radius: 5px;
       box-shadow: 0 0 10px rgba(0, 0, 0, .2);
@@ -137,6 +138,9 @@ javascript: (function () {
     #ac-panel-title {
       font-size: 1.5em;
     }
+    .ac-panel p {
+      font-size: 1em;
+    }
     .ac-stats {
       margin: 10px 0;
       padding: 10px;
@@ -145,6 +149,7 @@ javascript: (function () {
     }
     .ac-stats p {
       margin: 5px 0;
+      font-size: 1em;
     }
     .ac-indicator {
       background-color: #ff0;
@@ -185,6 +190,7 @@ javascript: (function () {
       border-radius: 3px;
       background: #0d6efd;
       color: #fff;
+      font-size: .8em;
       cursor: pointer;
     }
     .ac-btn:focus {
