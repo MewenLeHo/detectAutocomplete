@@ -4,21 +4,30 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [Unreleased]
 
-### Added
-- **CSV Export**: Added a new feature to export validation results in a CSV format with detailed data.
-- **Dark/Light Theme Support**: Theme switching based on system preference, improving accessibility and user experience.
-
 ### Changed
-- **Accessibility Improvements**: Enhanced support for keyboard navigation and ARIA implementation, improving accessibility for screen readers.
-- **UI Enhancements**: Reworked the control panel layout for better usability across devices.
-- **Validation Engine**: Improved the validation engine to handle more complex field types and edge cases.
+- **Demo update**: Improve the demo by preventing the script from being loaded multiple times.
+
+## [1.3.4] – 2025-09-20
 
 ### Fixed
+- **Layout Fixes**: Added `color` and `background-color` for a more robust design and accessibility.
 - **UI Glitches**: Fixed minor UI glitches in the control panel layout on Safari and Edge.
 - **Cross-Browser Compatibility**: Resolved issues with validation results not displaying properly in certain browsers.
 
 ### Removed
 - **Legacy IE Support**: Removed support for Internet Explorer versions below IE11 due to lack of modern JavaScript support.
+
+## [1.3.3] – 2025-05-23
+
+### Added
+- **CSV Export**: Added a new feature to export validation results in a CSV format with detailed data.
+- **Dark/Light Theme Support**: Theme switching based on system preference, improving accessibility and user experience.
+
+### Changed
+- **Documentation update**: Adding Changelog and Roadmap.
+- **Accessibility Improvements**: Enhanced support for keyboard navigation and ARIA implementation, improving accessibility for screen readers.
+- **UI Enhancements**: Reworked the control panel layout for better usability across devices.
+- **Validation Engine**: Improved the validation engine to handle more complex field types and edge cases.
 
 ## [1.3.2] – 2025-05-18
 

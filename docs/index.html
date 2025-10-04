@@ -170,10 +170,15 @@
 <script>
   const btn = document.getElementById('runAudit');
   btn.addEventListener('click', runAudit);
+
   function runAudit() {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/gh/MewenLeHo/detectAutocomplete@main/detectAutocomplete.min.js";
-    document.body.appendChild(script);
+    // Prevent adding the script multiple times
+    if (!document.getElementById('ac-script')) {
+      const script = document.createElement("script");
+      script.id = "ac-script";
+      script.src = "https://cdn.jsdelivr.net/gh/MewenLeHo/detectAutocomplete@main/detectAutocomplete.min.js";
+      document.body.appendChild(script);
+    }
   }
 </script>
 
