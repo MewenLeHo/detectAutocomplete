@@ -4,7 +4,12 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [Unreleased]
 
-### Changed
+## [1.3.5] – 2025-10-12
+
+### Fixed
+- **Accessibility Improvements**: Enhanced support for keyboard navigation and ARIA implementation, improving accessibility for screen readers.
+- **UI Glitches**: Improve color contrasts.
+- **Performance Optimizations**: Fix an issue with CSS cleaning after closing the panel.
 - **Demo update**: Improve the demo by preventing the script from being loaded multiple times.
 
 ## [1.3.4] – 2025-09-20

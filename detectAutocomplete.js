@@ -121,6 +121,7 @@ javascript: (function () {
 
   // Styles
   const style = document.createElement('style');
+  style.id = 'ac-styles';
   style.textContent = `
     .ac-panel {
       position: fixed;
@@ -1106,6 +1107,8 @@ javascript: (function () {
   panel.setAttribute('role', 'dialog');
   panel.setAttribute('aria-modal', 'true');
   panel.setAttribute('aria-labelledby', 'ac-panel-title');
+  panel.setAttribute('aria-live', 'polite');
+  panel.setAttribute('aria-keyshortcuts', 'Escape');
   panel.innerHTML = `
   <p id="ac-panel-title">${messages.ui.panelTitle}</p>
   <div class="ac-stats">
