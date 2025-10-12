@@ -60,7 +60,7 @@
 
     .note {
       font-size: 0.9em;
-      color: #666;
+      color: #333;
       margin-top: 1rem;
     }
 
@@ -173,12 +173,15 @@
 
   function runAudit() {
     // Prevent adding the script multiple times
-    if (!document.getElementById('ac-script')) {
-      const script = document.createElement("script");
-      script.id = "ac-script";
-      script.src = "https://cdn.jsdelivr.net/gh/MewenLeHo/detectAutocomplete@main/detectAutocomplete.min.js";
-      document.body.appendChild(script);
+    const existingScript = document.getElementById('ac-script');
+    if (existingScript) {
+      existingScript.remove();
     }
+
+    const script = document.createElement("script");
+    script.id = "ac-script";
+    script.src = "https://cdn.jsdelivr.net/gh/MewenLeHo/detectAutocomplete@main/detectAutocomplete.min.js";
+    document.body.appendChild(script);
   }
 </script>
 
