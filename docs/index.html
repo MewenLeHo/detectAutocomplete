@@ -73,8 +73,13 @@
 </head>
 
 <body>
-  <h1><span aria-hidden="true">🔍</span> Autocomplete Attribute Audit - Demo</h1>
-  <p>This demo lets you test a bookmarklet that audits <code>autocomplete</code> attributes on form elements.</p>
+  <h1>
+    <span aria-hidden="true">🔍</span> Autocomplete Attribute Audit - Demo
+  </h1>
+  <p>
+    This demo lets you test a bookmarklet that audits
+    <code>autocomplete</code> attributes on form elements.
+  </p>
 
   <fieldset>
     <legend><span aria-hidden="true">✅</span> Valid values</legend>
@@ -117,7 +122,9 @@
   </fieldset>
 
   <fieldset>
-    <legend><span aria-hidden="true">⚠️</span> Missing <code>autocomplete</code></legend>
+    <legend>
+      <span aria-hidden="true">⚠️</span> Missing <code>autocomplete</code>
+    </legend>
     <label>
       Job title:
       <input type="text" name="job" />
@@ -156,33 +163,69 @@
     </label>
   </fieldset>
 
+  <fieldset>
+    <legend><span aria-hidden="true">🧩</span> Web Component: valid vs invalid</legend>
+    <custom-input label="Valid Web Component" autocomplete="email"></custom-input>
+    <custom-input label="Invalid Web Component" autocomplete="my-custom-field"></custom-input>
+  </fieldset>
+  </fieldset>
+
   <button class="launch-btn" id="runAudit">Run Autocomplete Audit</button>
-  <p class="note">The audit script will be dynamically loaded and executed.</p>
+  <p class="note">
+    The audit script will be dynamically loaded and executed.
+  </p>
 
   <p class="note">
-    <span aria-hidden="true">ℹ️</span> Learn more in the <a
-      href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute"
+    <span aria-hidden="true">ℹ️</span> Learn more in the
+    <a href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofilling-form-controls:-the-autocomplete-attribute"
       target="_blank" rel="noopener">HTML Standard for the autocomplete attribute</a>.
   </p>
 </body>
 
-
 <script>
-  const btn = document.getElementById('runAudit');
-  btn.addEventListener('click', runAudit);
+  const btn = document.getElementById("runAudit");
+  btn.addEventListener("click", runAudit);
 
   function runAudit() {
     // Prevent adding the script multiple times
-    const existingScript = document.getElementById('ac-script');
+    const existingScript = document.getElementById("ac-script");
     if (existingScript) {
       existingScript.remove();
     }
 
     const script = document.createElement("script");
     script.id = "ac-script";
-    script.src = "https://cdn.jsdelivr.net/gh/MewenLeHo/detectAutocomplete@main/detectAutocomplete.min.js";
+    script.src =
+      "https://cdn.jsdelivr.net/gh/MewenLeHo/detectAutocomplete@main/detectAutocomplete.min.js";
     document.body.appendChild(script);
   }
+</script>
+
+<script>
+  class CustomInput extends HTMLElement {
+    constructor() {
+      super();
+      const shadow = this.attachShadow({ mode: "open" });
+      const labelText = this.getAttribute("label") || "";
+      const type = this.getAttribute("type") || "text";
+      const autocomplete = this.getAttribute("autocomplete") || "";
+      const label = document.createElement("label");
+      label.textContent = labelText;
+      const input = document.createElement("input");
+      input.type = type;
+      input.setAttribute("autocomplete", autocomplete);
+      label.appendChild(input);
+      // Récupère le style global de la page
+      const globalStyle = document.querySelector('style');
+      if (globalStyle) {
+        const style = document.createElement('style');
+        style.textContent = globalStyle.textContent;
+        shadow.appendChild(style);
+      }
+      shadow.appendChild(label);
+    }
+  }
+  customElements.define("custom-input", CustomInput);
 </script>
 
 </html>

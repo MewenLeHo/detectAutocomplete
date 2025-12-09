@@ -1,11 +1,30 @@
 javascript: (function () {
+  // Get all custom elements in the document
+  function findCustomElements(root = document) {
+    return Array.from(root.querySelectorAll('*')).filter((elm) =>
+      elm.tagName.includes('-')
+    );
+  }
+
+  // Deep querySelectorAll to include shadow DOMs
+  function deepQuerySelectorAll(selector, root = document) {
+    const results = Array.from(root.querySelectorAll(selector));
+    const customElements = findCustomElements(root);
+    for (const el of customElements) {
+      if ('shadowRoot' in el && el.shadowRoot) {
+        results.push(...deepQuerySelectorAll(selector, el.shadowRoot));
+      }
+    }
+    return results;
+  }
+
   // Remove existing elements and styles from previous executions
   function cleanup() {
-    document
-      .querySelectorAll('.ac-indicator, .ac-panel')
-      .forEach((el) => el.remove());
-    const existingStyle = document.querySelector('#ac-styles');
-    if (existingStyle) existingStyle.remove();
+    deepQuerySelectorAll('.ac-indicator, .ac-panel').forEach((el) =>
+      el.remove()
+    );
+    const existingStyles = deepQuerySelectorAll('#ac-styles');
+    existingStyles.forEach((style) => style.remove());
   }
   cleanup();
 
@@ -14,7 +33,7 @@ javascript: (function () {
   const fragment = document.createDocumentFragment();
 
   // Get all form elements
-  const elements = document.querySelectorAll('input, select, textarea');
+  const elements = deepQuerySelectorAll('input, select, textarea');
 
   // Initialize results object
   const results = {
@@ -278,6 +297,12 @@ javascript: (function () {
     }
   `;
   fragment.appendChild(style);
+
+  // Append styles to shadow DOMs of custom elements
+  const customElements = findCustomElements();
+  customElements.forEach((customElement) => {
+    customElement.shadowRoot?.appendChild(style.cloneNode(true));
+  });
 
   // Define Maps for allowed values with metadata
   const allowedValuesMap = new Map([
@@ -1288,9 +1313,9 @@ javascript: (function () {
         );
 
         requestAnimationFrame(() => {
-          document
-            .querySelectorAll('.ac-indicator')
-            .forEach((el) => el.classList.toggle('ac-hidden'));
+          deepQuerySelectorAll('.ac-indicator').forEach((el) =>
+            el.classList.toggle('ac-hidden')
+          );
         });
       });
     }
